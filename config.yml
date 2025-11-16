@@ -1,0 +1,5 @@
+left_coordinate: 370   # X pixel coordinate for left measurement line
+right_coordinate: 735  # X pixel coordinate for right measurement line
+distance: 450         # Real-world distance in centimeters between coordinates
+fps: 30     
+downsize_video: 480

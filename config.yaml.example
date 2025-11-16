@@ -1,0 +1,22 @@
+# Example Configuration File for Car Speed Detection
+# Copy this file to config.yaml and adjust values for your video
+
+# Left measurement coordinate (X pixel position)
+# This is where the car's speed measurement starts
+left_coordinate: 100
+
+# Right measurement coordinate (X pixel position)
+# This is where the car's speed measurement ends
+# MUST be greater than left_coordinate
+right_coordinate: 500
+
+# Real-world distance between left and right coordinates
+# Measured in centimeters
+# Example: 200 cm = 2 meters
+distance: 200
+
+# Video frame rate (frames per second)
+# Should match your video's actual FPS
+# Common values: 24, 25, 30, 60
+fps: 30
+
