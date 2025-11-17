@@ -3,6 +3,13 @@
 Auto-generated from all feature plans. Last updated: 2025-11-16
 
 ## Active Technologies
+- File-based (video files, configuration files, optional pre-computed detection results cache) (002-detection-visualizer)
+- Python 3.11+ + PySide6 (GUI framework), OpenCV (video processing), ultralytics (YOLO detection), numpy (array operations), PyYAML (config parsing) (002-detection-visualizer)
+- N/A (in-memory state, file-based input/output) (002-detection-visualizer)
+- Python 3.11+ + PySide6 (GUI framework), opencv-python>=4.8.0 (video processing), ultralytics>=8.0.0 (YOLO detection), numpy>=1.24.0, PyYAML>=6.0, pytest>=7.4.0, pytest-qt (GUI testing) (002-detection-visualizer)
+- N/A (in-memory state, file-based video/config/JSON input) (002-detection-visualizer)
+- Python 3.11+ (matches Feature 001) + PySide6 (GUI framework), opencv-python (video processing), ultralytics (YOLO detection - via Feature 001), numpy (image processing), PyYAML (config parsing) (002-detection-visualizer)
+- File-based (JSON input files, video files, config files) - no database required (002-detection-visualizer)
 
 - Python 3.11+ (001-car-speed-detection)
 
@@ -22,8 +29,10 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.11+: Follow standard conventions
 
 ## Recent Changes
+- 002-detection-visualizer: Added Python 3.11+ (matches Feature 001) + PySide6 (GUI framework), opencv-python (video processing), ultralytics (YOLO detection - via Feature 001), numpy (image processing), PyYAML (config parsing)
+- 002-detection-visualizer: Added Python 3.11+ + PySide6 (GUI framework), opencv-python>=4.8.0 (video processing), ultralytics>=8.0.0 (YOLO detection), numpy>=1.24.0, PyYAML>=6.0, pytest>=7.4.0, pytest-qt (GUI testing)
+- 002-detection-visualizer: Added Python 3.11+ + PySide6 (GUI framework), OpenCV (video processing), ultralytics (YOLO detection), numpy (array operations), PyYAML (config parsing)
 
-- 001-car-speed-detection: Added Python 3.11+
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->

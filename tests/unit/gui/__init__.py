@@ -1,0 +1,2 @@
+"""GUI unit tests module."""
+

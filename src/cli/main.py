@@ -395,9 +395,15 @@ def cli(
         if output_format.lower() == "json":
             output = format_json_output(result)
             click.echo(output)
+            # file output to file
+            with open(f"{video_path_obj.stem}_output.json", "w") as f:
+                f.write(output)
         elif output_format.lower() == "csv":
             output = format_csv_output(result)
             click.echo(output)
+            # file output to file
+            with open(f"{video_path_obj.stem}_output.csv", "w") as f:
+                f.write(output)
         else:  # text
             output = format_text_output(result)
             click.echo(output)
