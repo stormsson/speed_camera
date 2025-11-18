@@ -14,6 +14,8 @@ from src.lib.exceptions import InvalidConfigurationError
 class Configuration:
     """Represents the measurement parameters loaded from the configuration file."""
 
+    yolo_model: str  # YOLO model name (default: yolov8s.pt for nano model)
+    yolo_confidence_threshold: float  # Minimum confidence score for detections (0.0 to 1.0)
     left_coordinate: int  # X-coordinate in pixels where left measurement line is drawn
     right_coordinate: int  # X-coordinate in pixels where right measurement line is drawn
     distance: float  # Real-world distance between left and right coordinates in centimeters
@@ -27,6 +29,17 @@ class Configuration:
     def _validate(self) -> None:
         """Validate configuration parameters."""
         errors = []
+
+        # Validate yolo_model
+        if not self.yolo_model:
+            self.yolo_model = "yolov8n.pt"
+
+        if not self.yolo_confidence_threshold:
+            self.yolo_confidence_threshold = 0.7
+        
+        # Validate yolo_confidence_threshold
+        if self.yolo_confidence_threshold < 0 or self.yolo_confidence_threshold > 1:
+            self.yolo_confidence_threshold = 0.7
 
         # Validate left_coordinate
         if self.left_coordinate < 0:
@@ -122,6 +135,8 @@ class Configuration:
             left_coordinate = int(data['left_coordinate'])
             right_coordinate = int(data['right_coordinate'])
             distance = float(data['distance'])
+            yolo_model =data['yolo_model']
+            yolo_confidence_threshold = float(data['yolo_confidence_threshold'])
             fps = float(data['fps'])
             # Optional downsize_video parameter
             downsize_video = None
@@ -140,7 +155,9 @@ class Configuration:
                 right_coordinate=right_coordinate,
                 distance=distance,
                 fps=fps,
-                downsize_video=downsize_video
+                downsize_video=downsize_video,
+                yolo_model=yolo_model,
+                yolo_confidence_threshold=yolo_confidence_threshold,
             )
         except InvalidConfigurationError as e:
             # Re-raise with config_path context

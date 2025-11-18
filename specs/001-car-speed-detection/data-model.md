@@ -105,7 +105,7 @@ Represents an event when a car crosses a measurement coordinate.
 - `frame_number` (int): Frame when crossing occurred
 - `coordinate_type` (str): "left" or "right"
 - `coordinate_value` (int): X-coordinate value that was crossed
-- `car_center_x` (int): X-coordinate of car center when crossing occurred
+- `car_rightmost_x` (int): X-coordinate of car right side when crossing occurred
 - `confidence` (float): Detection confidence at crossing frame
 
 **Relationships**:

@@ -149,7 +149,7 @@ The visualizer MUST use or display data from the following Feature 001 data mode
 
 - **SpeedMeasurement** (`src/models/detection_result.py`): Represents calculated speed results with attributes (speed_kmh, frame_count, track_id, left_crossing_frame, right_crossing_frame, confidence). The visualizer MUST extract speed_measurements from JSON input file and use them to highlight known cars and display expected results alongside live detection.
 
-- **CoordinateCrossingEvent** (`src/models/detection_result.py`): Represents coordinate crossing events with attributes (track_id, frame_number, coordinate_type, coordinate_value, car_center_x, confidence). The visualizer highlights these crossing events on frames.
+- **CoordinateCrossingEvent** (`src/models/detection_result.py`): Represents coordinate crossing events with attributes (track_id, frame_number, coordinate_type, coordinate_value, car_rightmost_x, confidence). The visualizer highlights these crossing events on frames.
 
 ### Services (from Feature 001)
 

@@ -56,7 +56,7 @@ class CoordinateCrossingDetector:
                     frame_number=frame_number,
                     coordinate_type="left",
                     coordinate_value=self.left_coordinate,
-                    car_center_x=car_rightmost_x,  # Store rightmost x for logging
+                    car_rightmost_x=car_rightmost_x,  # Store rightmost x for logging
                     confidence=latest_detection.confidence
                 )
                 events.append(event)
@@ -85,7 +85,7 @@ class CoordinateCrossingDetector:
                     frame_number=frame_number,
                     coordinate_type="right",
                     coordinate_value=self.right_coordinate,
-                    car_center_x=car_rightmost_x,  # Store rightmost x for logging
+                    car_rightmost_x=car_rightmost_x,  # Store rightmost x for logging
                     confidence=latest_detection.confidence
                 )
                 events.append(event)

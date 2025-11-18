@@ -100,6 +100,7 @@ class MainWindow(QMainWindow):
         self.navigation_controls.previous_frame_requested.connect(self._on_previous_frame)
         self.navigation_controls.next_frame_requested.connect(self._on_next_frame)
         self.navigation_controls.frame_number_changed.connect(self._on_frame_number_changed)
+        self.navigation_controls.setMaximumHeight(80)  # Constrain height
         layout.addWidget(self.navigation_controls)
 
     def _setup_status_bar(self) -> None:

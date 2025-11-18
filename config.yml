@@ -1,3 +1,5 @@
+yolo_model: yolov8n.pt
+yolo_confidence_threshold: 0.7
 left_coordinate: 370   # X pixel coordinate for left measurement line
 right_coordinate: 735  # X pixel coordinate for right measurement line
 distance: 450         # Real-world distance in centimeters between coordinates

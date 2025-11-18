@@ -43,7 +43,7 @@
 - [x] T009 [P] Create VideoMetadata model in src/models/detection_result.py with attributes (file_path, frame_count, fps, width, height, duration_seconds)
 - [x] T010 [P] Create TrackedCar model in src/models/detection_result.py with attributes (track_id, detections, first_detection_frame, last_detection_frame, left_crossing_frame, right_crossing_frame)
 - [x] T011 [P] Create SpeedMeasurement model in src/models/detection_result.py with attributes (speed_kmh, speed_ms, frame_count, time_seconds, distance_meters, left_crossing_frame, right_crossing_frame, track_id, confidence, is_valid)
-- [x] T012 [P] Create CoordinateCrossingEvent model in src/models/detection_result.py with attributes (track_id, frame_number, coordinate_type, coordinate_value, car_center_x, confidence)
+- [x] T012 [P] Create CoordinateCrossingEvent model in src/models/detection_result.py with attributes (track_id, frame_number, coordinate_type, coordinate_value, car_rightmost_x, confidence)
 - [x] T013 [P] Create ProcessingResult model in src/models/detection_result.py with attributes (video_path, config_path, video_metadata, config, speed_measurement, processing_time_seconds, frames_processed, detections_count, error_message, logs)
 - [x] T014 Configure structured logging in src/lib/logging_config.py with JSON format output
 - [x] T015 Create base error handling classes in src/lib/exceptions.py (VideoLoadError, InvalidConfigurationError, NoCarDetectedError, CarNotCrossingBothCoordinatesError)

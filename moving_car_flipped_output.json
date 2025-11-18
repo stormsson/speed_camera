@@ -2,9 +2,9 @@
   "success": true,
   "video_path": "/Users/camillo.camarda/Downloads/moving_car_flipped.mp4",
   "config_path": "config.yml",
-  "processing_time_seconds": 25.912604808807373,
+  "processing_time_seconds": 65.53040504455566,
   "frames_processed": 608,
-  "detections_count": 249,
+  "detections_count": 280,
   "speed_measurements": [
     {
       "speed_kmh": 32.4,
@@ -14,17 +14,27 @@
       "left_crossing_frame": 5,
       "right_crossing_frame": 20,
       "track_id": 1,
-      "confidence": 0.863874282877324
+      "confidence": 0.8965538894308025
     },
     {
-      "speed_kmh": 40.5,
-      "frame_count": 12,
-      "time_seconds": 0.4,
+      "speed_kmh": 37.38461538461539,
+      "frame_count": 13,
+      "time_seconds": 0.43333333333333335,
+      "distance_meters": 4.5,
+      "left_crossing_frame": 102,
+      "right_crossing_frame": 115,
+      "track_id": 2,
+      "confidence": 0.8052522949143952
+    },
+    {
+      "speed_kmh": 37.38461538461539,
+      "frame_count": 13,
+      "time_seconds": 0.43333333333333335,
       "distance_meters": 4.5,
       "left_crossing_frame": 144,
-      "right_crossing_frame": 156,
+      "right_crossing_frame": 157,
       "track_id": 3,
-      "confidence": 0.8618865253632528
+      "confidence": 0.8558442122057864
     }
   ]
 }

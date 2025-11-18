@@ -99,7 +99,7 @@ class CoordinateCrossingEvent:
     frame_number: int  # Frame when crossing occurred
     coordinate_type: str  # "left" or "right"
     coordinate_value: int  # X-coordinate value that was crossed
-    car_center_x: int  # X-coordinate of car center when crossing occurred
+    car_rightmost_x: int  # X-coordinate of car rightmost edge when crossing occurred
     confidence: float  # Detection confidence at crossing frame
 
 

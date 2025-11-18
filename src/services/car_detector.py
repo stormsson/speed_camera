@@ -16,7 +16,7 @@ class CarDetector:
     # YOLO class ID for "car" (COCO dataset)
     CAR_CLASS_ID = 2
 
-    def __init__(self, confidence_threshold: float = 0.5, model_name: str = "yolov8n.pt"):
+    def __init__(self, confidence_threshold: float = 0.7, model_name: str = "yolov8s.pt"):
         """
         Initialize car detector.
 

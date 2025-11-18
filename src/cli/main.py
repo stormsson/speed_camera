@@ -72,7 +72,9 @@ def process_video(
                 right_coordinate=scaled_coords[1],
                 distance=config.distance,  # Distance doesn't change
                 fps=config.fps,
-                downsize_video=config.downsize_video
+                downsize_video=config.downsize_video,
+                yolo_model=config.yolo_model,
+                yolo_confidence_threshold=config.yolo_confidence_threshold,
             )
             crossing_detector = CoordinateCrossingDetector(scaled_config)
         else:

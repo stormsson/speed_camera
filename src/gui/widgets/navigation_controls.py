@@ -34,6 +34,8 @@ class NavigationControlsWidget(QWidget):
         layout = QHBoxLayout(self)
         layout.setContentsMargins(10, 10, 10, 10)
 
+        layout.addStretch()  # Add stretch at beginning to center controls
+
         # Previous Frame button
         self.prev_button = QPushButton("Previous Frame")
         self.prev_button.clicked.connect(self._on_previous_clicked)
@@ -50,8 +52,8 @@ class NavigationControlsWidget(QWidget):
         layout.addWidget(self.frame_input)
 
         # Frame counter display
-        self.frame_counter = QLabel("Frame 1 of 0")
-        layout.addWidget(self.frame_counter)
+        # self.frame_counter = QLabel("Frame 1 of 0")
+        # layout.addWidget(self.frame_counter)
 
         # Next Frame button
         self.next_button = QPushButton("Next Frame")
@@ -110,7 +112,7 @@ class NavigationControlsWidget(QWidget):
         self._total_frames = total_frames
 
         # Update frame counter
-        self.frame_counter.setText(f"Frame {current_frame} of {total_frames}")
+        #self.frame_counter.setText(f"Frame {current_frame} of {total_frames}")
 
         # Update frame input
         self.frame_input.setText(str(current_frame))
