@@ -11,7 +11,9 @@ from PySide6.QtWidgets import (
     QStatusBar,
     QWidget,
     QVBoxLayout,
-    QLabel
+    QHBoxLayout,
+    QLabel,
+    QDockWidget
 )
 from PySide6.QtCore import Qt, QEvent
 import cv2
@@ -21,6 +23,7 @@ from src.gui.widgets.video_display import VideoDisplayWidget
 from src.gui.widgets.coordinate_overlay import CoordinateOverlayWidget
 from src.gui.widgets.navigation_controls import NavigationControlsWidget
 from src.gui.widgets.detection_overlay import DetectionOverlayWidget
+from src.gui.widgets.debug_panel import DebugPanelWidget
 from src.gui.controllers.detection_controller import DetectionController
 from src.gui.controllers.detection_worker import DetectionWorker
 from src.gui.controllers.json_loader import JsonLoader
@@ -56,9 +59,10 @@ class MainWindow(QMainWindow):
         self._setup_menu_bar()
         self._setup_central_widget()
         self._setup_status_bar()
+        self._setup_debug_panel()
 
     def _setup_menu_bar(self) -> None:
-        """Setup menu bar with File menu."""
+        """Setup menu bar with File and View menus."""
         menubar = self.menuBar()
 
         # File menu
@@ -73,6 +77,15 @@ class MainWindow(QMainWindow):
         exit_action = file_menu.addAction("Exit")
         exit_action.setShortcut("Ctrl+Q")
         exit_action.triggered.connect(self.close)
+
+        # View menu
+        view_menu = menubar.addMenu("View")
+        
+        # Toggle Debug Panel action (will be set up after debug panel is created)
+        self.toggle_debug_action = view_menu.addAction("Show Debug Panel")
+        self.toggle_debug_action.setCheckable(True)
+        self.toggle_debug_action.setChecked(False)
+        self.toggle_debug_action.triggered.connect(self._toggle_debug_panel)
 
     def _setup_central_widget(self) -> None:
         """Setup central widget with video display and overlay."""
@@ -102,6 +115,35 @@ class MainWindow(QMainWindow):
         self.navigation_controls.frame_number_changed.connect(self._on_frame_number_changed)
         self.navigation_controls.setMaximumHeight(80)  # Constrain height
         layout.addWidget(self.navigation_controls)
+
+    def _setup_debug_panel(self) -> None:
+        """Setup debug panel as dockable widget."""
+        # Create debug panel widget
+        self.debug_panel = DebugPanelWidget()
+
+        # Create dock widget
+        self.debug_dock = QDockWidget("Debug Information", self)
+        self.debug_dock.setWidget(self.debug_panel)
+        self.debug_dock.setAllowedAreas(Qt.DockWidgetArea.RightDockWidgetArea | Qt.DockWidgetArea.LeftDockWidgetArea)
+        
+        # Add dock to main window
+        self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.debug_dock)
+        
+        # Initially hide the dock (user can show it via View menu)
+        self.debug_dock.setVisible(False)
+        
+        # Connect dock visibility changes to menu action
+        self.debug_dock.visibilityChanged.connect(self._on_debug_panel_visibility_changed)
+
+    def _toggle_debug_panel(self, checked: bool) -> None:
+        """Toggle debug panel visibility."""
+        if hasattr(self, 'debug_dock'):
+            self.debug_dock.setVisible(checked)
+
+    def _on_debug_panel_visibility_changed(self, visible: bool) -> None:
+        """Handle debug panel visibility change."""
+        if hasattr(self, 'toggle_debug_action'):
+            self.toggle_debug_action.setChecked(visible)
 
     def _setup_status_bar(self) -> None:
         """Setup status bar."""
@@ -390,6 +432,29 @@ class MainWindow(QMainWindow):
             video_height
         )
         
+        # Update debug panel
+        if hasattr(self, 'debug_panel') and self.debug_panel:
+            # Get scaled coordinates if available (matching video coordinate space)
+            debug_left_coord = left_coord
+            debug_right_coord = right_coord
+            
+            # If no scaled coordinates, use config coordinates
+            if debug_left_coord == 0 and self.config:
+                debug_left_coord = self.config.left_coordinate
+            if debug_right_coord == 0 and self.config:
+                debug_right_coord = self.config.right_coordinate
+            
+            self.debug_panel.update_debug_info(
+                current_frame,
+                detections,
+                tracked_cars,
+                crossing_events,
+                self.config,
+                self._json_speed_measurements,
+                left_coordinate=debug_left_coord,
+                right_coordinate=debug_right_coord
+            )
+
         # Update detection status
         self.detection_status_label.setText("Complete")
 

@@ -10,7 +10,8 @@ from src.models import (
     CoordinateCrossingEvent,
     SpeedMeasurement,
     Configuration,
-    VideoMetadata
+    VideoMetadata,
+    BoundingBox
 )
 from src.services.car_tracker import CarTracker
 
@@ -65,4 +66,43 @@ class FrameNavigationState:
     can_go_next: bool = False
     frame_cache: Dict[int, QPixmap] = field(default_factory=dict)
     frame_cache_size: int = 10
+
+
+@dataclass
+class TrackedCarAnalysis:
+    """Analysis data for a single tracked car."""
+
+    track_id: int
+    bounding_box: Optional[BoundingBox] = None
+    confidence: float = 0.0
+    class_name: str = ""
+    left_crossing_frame: Optional[int] = None
+    right_crossing_frame: Optional[int] = None
+    car_rightmost_x: int = 0
+
+
+@dataclass
+class CrossingAnalysis:
+    """Analysis data for coordinate crossing detection."""
+
+    track_id: int
+    coordinate_type: str  # "left" or "right"
+    coordinate_value: int
+    car_rightmost_x: int
+    comparison_result: str  # e.g., "car_rightmost_x >= coordinate_value"
+    condition_met: bool
+    crossing_state: str  # Explanation of current crossing state
+    crossing_detected: bool
+
+
+@dataclass
+class DebugInformationState:
+    """Represents detailed detection analysis data displayed in the debug panel."""
+
+    current_frame_number: int = 0
+    detection_results: List[DetectionResult] = field(default_factory=list)
+    tracked_cars_analysis: Dict[int, TrackedCarAnalysis] = field(default_factory=dict)
+    coordinate_crossing_analysis: Dict[int, List[CrossingAnalysis]] = field(default_factory=dict)
+    configuration_values: Optional[Configuration] = None
+    json_expected_results: List[SpeedMeasurement] = field(default_factory=list)
 

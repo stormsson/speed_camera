@@ -30,7 +30,8 @@ def process_video(
     config_path: str,
     config: Configuration,
     confidence_threshold: float = 0.5,
-    return_tracked_cars: bool = False
+    return_tracked_cars: bool = False,
+    debug: bool = False
 ) -> Tuple[ProcessingResult, Optional[List[TrackedCar]]]:
     """
     Process video to detect car speed.
@@ -41,6 +42,7 @@ def process_video(
         config: Configuration object
         confidence_threshold: Detection confidence threshold
         return_tracked_cars: If True, return list of tracked cars for visualization
+        debug: If True, generate debug images for each crossing event
 
     Returns:
         Tuple of (ProcessingResult with speed measurements, optional list of tracked cars)
@@ -64,6 +66,7 @@ def process_video(
         
         # Get scaled coordinates if video was resized
         scaled_coords = video_processor.get_scaled_coordinates()
+        scaled_config = None
         if scaled_coords:
             # Create a temporary config with scaled coordinates for crossing detection
             from src.models.config import Configuration
@@ -83,6 +86,14 @@ def process_video(
         car_detector = CarDetector(confidence_threshold=confidence_threshold)
         car_tracker = CarTracker()
         speed_calculator = SpeedCalculator(config)
+        
+        # Initialize debug image generator if debug mode is enabled
+        debug_image_generator = None
+        if debug:
+            from src.services.debug_image_generator import DebugImageGenerator
+            # Use scaled config if video was resized, otherwise use original config
+            debug_config = scaled_config if scaled_config else config
+            debug_image_generator = DebugImageGenerator(debug_config)
 
         # Process frames
         tracked_cars_with_crossings = []
@@ -99,7 +110,13 @@ def process_video(
 
             # Check for coordinate crossings
             for tracked_car in tracked_cars:
-                crossing_events = crossing_detector.detect_crossings(tracked_car, frame_number)
+                crossing_events = crossing_detector.detect_crossings(
+                    tracked_car, 
+                    frame_number,
+                    debug=debug,
+                    video_processor=video_processor if debug else None,
+                    debug_image_generator=debug_image_generator
+                )
                 
                 # If car has crossed both coordinates, mark for speed calculation
                 if tracked_car.is_complete() and tracked_car not in tracked_cars_with_crossings:
@@ -329,6 +346,12 @@ def format_csv_output(result: ProcessingResult) -> str:
     default=False,
     help="Generate and save composite image showing car crossing boundaries"
 )
+@click.option(
+    "--debug", "-d",
+    is_flag=True,
+    default=False,
+    help="Generate debug images for each crossing event (saved as crossing_[frame_number].png)"
+)
 def cli(
     video_file: str,
     config_file: str,
@@ -336,7 +359,8 @@ def cli(
     verbose: bool,
     log_file: Optional[str],
     confidence_threshold: float,
-    show: bool
+    show: bool,
+    debug: bool
 ):
     """
     Detect car speed from video file.
@@ -362,14 +386,17 @@ def cli(
             config_file, 
             config, 
             confidence_threshold,
-            return_tracked_cars=show
+            return_tracked_cars=show,
+            debug=debug
         )
 
+        # Get video path object for output file naming
+        from pathlib import Path
+        video_path_obj = Path(video_file)
+        
         # Generate image if --show flag is set
         if show and result.speed_measurements and tracked_cars:
             try:
-                from pathlib import Path
-                video_path_obj = Path(video_file)
                 output_image_path = f"{video_path_obj.stem}_speed_result.png"
                 
                 # Reopen video processor for image generation (with config for resizing if needed)

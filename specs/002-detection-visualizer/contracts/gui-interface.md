@@ -101,6 +101,51 @@ This contract defines the GUI interface behavior and user interactions for the v
 - MUST update when detection starts/completes on frame navigation
 - MUST show processing indicator during live detection (1-3 seconds per frame)
 
+### Debug Information Panel
+
+**Component**: `DebugPanelWidget` (PySide6 QWidget or QDockWidget)
+
+**Required Elements**:
+- Section header showing current frame number
+- Per-tracked-car analysis sections (one section per car detected in current frame)
+- For each car section:
+  - YOLO detection results display:
+    - Bounding box coordinates (x1, y1, x2, y2 from Feature 001's BoundingBox)
+    - Confidence score (from Feature 001's DetectionResult)
+    - Class name (from Feature 001's DetectionResult)
+    - Car rightmost X coordinate (BoundingBox.x2)
+  - Tracked car information display:
+    - Track ID (from Feature 001's TrackedCar)
+    - Left crossing frame (left_crossing_frame from Feature 001's TrackedCar)
+    - Right crossing frame (right_crossing_frame from Feature 001's TrackedCar)
+  - Coordinate crossing analysis display:
+    - When crossing detected: car_rightmost_x value, coordinate_value, comparison logic (e.g., "car_rightmost_x >= coordinate_value"), condition met status
+    - When crossing NOT detected: car_rightmost_x value, coordinate_value, comparison result (e.g., "car_rightmost_x < coordinate_value"), crossing state explanation (e.g., "left_crossing_frame is None" or "left already crossed, waiting for right")
+- Comparison section showing live detection results vs expected JSON results (when JSON speed_measurements available)
+- Empty state message when no cars detected in current frame
+
+**Behavior**:
+- MUST update automatically when user navigates to different frame (FR-024)
+- MUST display detection information separately for each tracked car (FR-025)
+- MUST show both live detection results and expected JSON results when available (FR-026)
+- MUST display accurate detection analysis data matching actual detection state (SC-008)
+- MUST handle empty state (no cars detected) gracefully with informative message
+- Panel can be dockable (QDockWidget) or fixed (QWidget) - implementation choice
+
+**Data Sources**:
+- Receives detection data from DetectionController (detections, tracked_cars, crossing_events)
+- Receives configuration from MainWindow (left_coordinate, right_coordinate)
+- Receives JSON speed_measurements from JsonLoader (expected results)
+- Updates triggered by frame navigation events from MainWindow
+
+**Display Format Contract**:
+- MUST show frame number prominently at top
+- MUST organize information by tracked car (one section per track_id)
+- MUST clearly label each data field (e.g., "Bounding Box:", "Confidence:", "Track ID:")
+- MUST format comparison logic clearly (e.g., "250 >= 200" with explanation)
+- MUST distinguish between live detection results and expected JSON results visually (e.g., labels "Live:" vs "Expected:")
+- MUST show crossing state explanation in human-readable format
+
 ## User Interaction Contracts
 
 ### File Opening

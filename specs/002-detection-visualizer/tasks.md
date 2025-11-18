@@ -9,10 +9,11 @@
 
 This document contains actionable, dependency-ordered tasks for implementing the Car Detection Process Visualizer GUI application. Tasks are organized by phase, with each user story implemented as an independently testable increment.
 
-**Total Tasks**: 45  
+**Total Tasks**: 54  
 **User Story 1 (P1)**: 12 tasks  
 **User Story 2 (P2)**: 8 tasks  
 **User Story 3 (P3)**: 15 tasks  
+**User Story 4 (P3)**: 9 tasks  
 **Setup & Foundational**: 7 tasks  
 **Polish**: 3 tasks
 
@@ -25,7 +26,8 @@ This document contains actionable, dependency-ordered tasks for implementing the
 2. Phase 3: User Story 1 (MVP) - Coordinate visualization
 3. Phase 4: User Story 2 - Frame navigation
 4. Phase 5: User Story 3 - Detection visualization
-5. Final Phase: Polish and cross-cutting concerns
+5. Phase 6: User Story 4 - Debug detection events
+6. Final Phase: Polish and cross-cutting concerns
 
 **Parallel Opportunities**: Tasks marked with [P] can be executed in parallel as they work on different files with no dependencies on incomplete tasks.
 
@@ -44,12 +46,15 @@ Phase 4: User Story 2 (P2) - Frame Navigation (depends on US1)
   ↓
 Phase 5: User Story 3 (P3) - Detection Visualization (depends on US1, US2)
   ↓
+Phase 6: User Story 4 (P3) - Debug Detection Events (depends on US1, US2, US3)
+  ↓
 Final Phase: Polish
 ```
 
 **Story Dependencies**:
 - User Story 2 depends on User Story 1 (needs coordinate overlay display)
 - User Story 3 depends on User Story 1 and User Story 2 (needs frame navigation and coordinate display)
+- User Story 4 depends on User Story 1, User Story 2, and User Story 3 (needs detection visualization and frame navigation)
 
 ## Phase 1: Setup
 
@@ -143,15 +148,35 @@ Final Phase: Polish
 - [X] T044 [US3] Create detection status indicator in main window: add QLabel to status bar showing "Ready", "Detecting...", or "Complete" based on detection processing state
 - [X] T045 [US3] Implement async detection processing: use QThread to run detection in background, keep GUI responsive during detection (1-3 seconds per frame), update detection status indicator
 
+## Phase 6: User Story 4 - Debug Detection Events (P3)
+
+**Goal**: Users can view a debug information panel that displays detailed detection analysis explaining why detection events occurred or did not occur, enabling debugging of unexpected detection behavior.
+
+**Independent Test Criteria**: Navigate to a frame where an unexpected detection event occurs, open the debug panel, verify that the displayed information accurately explains the detection logic, bounding box positions, coordinate comparisons, and crossing state. Testable after US1, US2, and US3.
+
+**Acceptance**: Debug panel displays → YOLO detection results shown → tracked car info shown → crossing analysis explained → auto-updates on frame change → per-car analysis displayed → live vs JSON comparison shown.
+
+### User Story 4 Tasks
+
+- [X] T046 [US4] Create debug panel widget in src/gui/widgets/debug_panel.py as QWidget or QDockWidget subclass to display detailed detection analysis information per frame
+- [X] T047 [US4] Implement debug information state model in src/gui/models.py: add DebugInformationState class with attributes for current_frame_number, detection_results, tracked_cars_analysis, coordinate_crossing_analysis, configuration_values, json_expected_results per data-model.md
+- [X] T048 [US4] Implement crossing analysis computation in debug panel widget: compute car_rightmost_x from BoundingBox.x2, compare with coordinate_value from Configuration, determine condition_met (car_rightmost_x >= coordinate_value), generate crossing_state explanation based on TrackedCar crossing frame state
+- [X] T049 [US4] Implement per-car analysis formatting in debug panel widget: create _format_car_analysis() method to format YOLO detection results (bounding box coordinates, confidence, class_name), tracked car information (track_id, left_crossing_frame, right_crossing_frame), and car_rightmost_x value per FR-021
+- [X] T050 [US4] Implement crossing explanation formatting in debug panel widget: create _format_crossing_explanation() method to format crossing detection explanation when detected (car_rightmost_x, coordinate_value, comparison logic, condition_met) and when not detected (car_rightmost_x, coordinate_value, comparison result, crossing_state) per FR-022 and FR-023
+- [X] T051 [US4] Implement live vs JSON comparison formatting in debug panel widget: create _format_comparison() method to display both live detection results and expected results from JSON speed_measurements, allowing users to compare and identify discrepancies per FR-026
+- [X] T052 [US4] Implement debug panel update method in debug panel widget: create update_debug_info() method that accepts frame_number, detections, tracked_cars, crossing_events, config, json_measurements and updates panel display with formatted analysis per FR-020
+- [X] T053 [US4] Integrate debug panel in main window: add DebugPanelWidget to main window layout (dockable or fixed panel), connect frame navigation signals to debug panel update, pass detection results from DetectionController, configuration, and JSON measurements to debug panel per FR-024
+- [X] T054 [US4] Implement per-car analysis display in debug panel widget: organize debug information by tracked car (one section per track_id), display detection information separately for each tracked car when multiple cars are detected per FR-025
+
 ## Final Phase: Polish & Cross-Cutting Concerns
 
 **Goal**: Add error handling, performance optimizations, and user experience improvements.
 
 ### Polish Tasks
 
-- [ ] T046 Add comprehensive error handling: handle VideoLoadError, InvalidConfigurationError, DetectionProcessingError with user-friendly error dialogs and logging per contracts/gui-interface.md
-- [ ] T047 Implement performance optimizations: ensure frame display completes within 0.5 seconds (SC-002), optimize frame cache size, validate coordinate overlay accuracy (SC-003)
-- [ ] T048 Add GUI component tests using pytest-qt: test video display widget, coordinate overlay widget, detection overlay widget, navigation controls widget per contracts/gui-interface.md testing requirements
+- [ ] T055 Add comprehensive error handling: handle VideoLoadError, InvalidConfigurationError, DetectionProcessingError with user-friendly error dialogs and logging per contracts/gui-interface.md
+- [ ] T056 Implement performance optimizations: ensure frame display completes within 0.5 seconds (SC-002), optimize frame cache size, validate coordinate overlay accuracy (SC-003)
+- [ ] T057 Add GUI component tests using pytest-qt: test video display widget, coordinate overlay widget, detection overlay widget, navigation controls widget, debug panel widget per contracts/gui-interface.md testing requirements
 
 ## Parallel Execution Examples
 
@@ -168,6 +193,13 @@ Tasks T031, T033, T036 can be worked on in parallel:
 - T031: Create detection overlay widget (different file)
 - T033: Implement live detection (different file, uses existing services)
 - T036: Load JSON speed_measurements (different file, uses existing JSON loader)
+
+### User Story 4 Parallel Opportunities
+
+Tasks T047, T048, T049 can be worked on in parallel:
+- T047: Implement debug information state model (different file)
+- T048: Implement crossing analysis computation (different file, uses existing models)
+- T049: Implement per-car analysis formatting (different file, uses existing models)
 
 ## Test Strategy
 

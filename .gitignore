@@ -76,3 +76,6 @@ htmlcov/
 
 *.png
 *.json
+
+output/
+.cursor/rules/python-env.mdc

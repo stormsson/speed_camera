@@ -193,6 +193,57 @@
 
 ---
 
+## Phase 4.8: Fix FR-004/FR-005 - Transition-Based Crossing Detection
+
+**Goal**: Update coordinate crossing detection to use transition-based detection (detect crossing on first frame where rightmost edge transitions from < coordinate to >= coordinate) instead of simple threshold check
+
+**Independent Test**: Can be tested independently by providing test cases with known frame transitions and verifying crossing is detected at the exact transition frame, not after the car has already passed the line.
+
+### Tests for Transition-Based Crossing Detection ⚠️
+
+> **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
+
+- [x] T100 [P] [US1] Update unit test for transition-based left crossing detection in tests/unit/test_coordinate_crossing.py (test crossing detected on transition frame, test no crossing when already past coordinate, test crossing with previous frame state)
+- [x] T101 [P] [US1] Update unit test for transition-based right crossing detection in tests/unit/test_coordinate_crossing.py (test crossing detected on transition frame, test no crossing when already past coordinate, test crossing only after left crossing)
+- [x] T102 [P] [US1] Add integration test for transition-based crossing accuracy in tests/integration/test_end_to_end.py (test crossing frame accuracy against ground truth, verify transition detection improves timing accuracy)
+
+### Implementation for Transition-Based Crossing Detection
+
+- [x] T103 [US1] Update coordinate crossing detector in src/services/coordinate_crossing_detector.py (check previous frame's rightmost_x to detect transition from < coordinate to >= coordinate for left crossing, check previous frame's rightmost_x to detect transition from < coordinate to >= coordinate for right crossing, handle edge case when car first appears past coordinate)
+- [x] T104 [US1] Update crossing detection logic to use previous frame state in src/services/coordinate_crossing_detector.py (access previous detection from tracked_car.detections list, compare previous frame's x2 with current frame's x2, only trigger crossing event on transition)
+- [x] T105 [US1] Update logging in src/services/coordinate_crossing_detector.py (log previous frame x2 value, log transition detection criteria, log when crossing is skipped due to no transition)
+
+**Checkpoint**: At this point, crossing detection should accurately identify the exact frame where the car transitions across coordinates, improving speed measurement accuracy.
+
+---
+
+## Phase 4.9: Debug Feature (FR-015) - Generate Debug Images on Crossing Events
+
+**Goal**: Add `--debug` CLI parameter that generates PNG images named `crossing_[frame_number].png` in the project folder for each crossing event, showing bounding box, coordinate lines, and detection criteria text
+
+**Independent Test**: Can be tested independently by running the CLI with `--debug` parameter on a video with crossing events and verifying PNG files are generated with correct annotations and criteria text.
+
+### Tests for Debug Feature ⚠️
+
+> **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
+
+- [x] T110 [P] [US1] Unit test for debug image generator in tests/unit/test_debug_image_generator.py (test PNG file creation, test bounding box drawing, test coordinate line drawing, test criteria text rendering)
+- [x] T111 [P] [US1] Contract test for --debug parameter in tests/contract/test_cli_interface.py (test --debug flag, test debug image file creation, test image content validation, test file naming convention)
+- [x] T112 [P] [US1] Integration test for debug image generation in tests/integration/test_end_to_end.py (test debug images generated for both left and right crossings, test multiple cars generate separate debug images)
+
+### Implementation for Debug Feature
+
+- [x] T113 [US1] Create debug image generator service in src/services/debug_image_generator.py (create debug image from frame, draw car bounding box with color, draw vertical lines for left_coordinate and right_coordinate, render detection criteria text string)
+- [x] T114 [US1] Implement detection criteria text formatting in src/services/debug_image_generator.py (format text as "bounding box X: [coord] - left line coord: [coord]" for left crossing, format text as "bounding box X: [coord] - right line coord: [coord]" for right crossing, include frame number and track ID in text)
+- [x] T115 [US1] Implement debug image file saving in src/services/debug_image_generator.py (save PNG file with naming convention `crossing_[frame_number].png`, save to project folder (current working directory), handle file write errors gracefully)
+- [x] T116 [US1] Add --debug parameter to CLI in src/cli/main.py (add Click option flag, pass debug flag to processing pipeline, conditionally enable debug image generation)
+- [x] T117 [US1] Integrate debug image generation into crossing detection in src/services/coordinate_crossing_detector.py (accept debug flag and video processor, generate debug image when crossing event detected, pass frame and detection data to debug image generator)
+- [x] T118 [US1] Update processing pipeline in src/cli/main.py (pass debug flag to coordinate crossing detector, ensure video processor is available for frame extraction during crossing events, handle debug image generation errors without failing main processing)
+
+**Checkpoint**: At this point, the --debug parameter should generate PNG images for each crossing event with bounding boxes, coordinate lines, and detection criteria text, enabling debugging of crossing detection accuracy.
+
+---
+
 ## Phase 5: Polish & Cross-Cutting Concerns
 
 **Purpose**: Improvements that affect multiple user stories
@@ -219,6 +270,8 @@
 - **Visualization Feature (Phase 4.5)**: Depends on Phase 4 completion - Extends User Story 1 with image generation
 - **Video Downsizing Feature (Phase 4.6)**: Depends on Phase 3 completion - Extends User Story 2 with performance optimization
 - **Multi-Car Processing Feature (Phase 4.7)**: Depends on Phase 4 completion - Extends User Story 1 with sequential multi-car processing
+- **Transition-Based Crossing Detection (Phase 4.8)**: Depends on Phase 4 completion - Fixes FR-004/FR-005 to improve crossing detection accuracy
+- **Debug Feature (Phase 4.9)**: Depends on Phase 4 completion - Implements FR-015 for debugging crossing events
 - **Polish (Phase 5)**: Depends on all desired user stories being complete
 
 ### User Story Dependencies

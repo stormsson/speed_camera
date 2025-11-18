@@ -181,3 +181,38 @@ The visualizer uses the following data models from Feature 001. See `/specs/001-
 - Error message: "Detection processing failed: [error details]"
 - State: DetectionVisualizationState.is_detection_running = False, error logged
 
+#### DebugInformationState
+
+Represents detailed detection analysis data displayed in the debug panel.
+
+**Attributes**:
+- `current_frame_number` (int): Frame number being analyzed
+- `detection_results` (List[DetectionResult]): Live YOLO detection results for current frame (from Feature 001's CarDetector)
+- `tracked_cars_analysis` (Dict[int, TrackedCarAnalysis]): Dictionary mapping track_id to per-car analysis
+- `coordinate_crossing_analysis` (Dict[int, CrossingAnalysis]): Dictionary mapping track_id to crossing detection analysis
+- `configuration_values` (Configuration): Current configuration (left_coordinate, right_coordinate) from Feature 001
+- `json_expected_results` (List[SpeedMeasurement]): Expected results from JSON speed_measurements for comparison
+
+**Relationships**:
+- Uses: DetectionResult, TrackedCar, CoordinateCrossingEvent, SpeedMeasurement, Configuration from Feature 001
+- Updated by: Frame navigation, live detection processing
+
+**TrackedCarAnalysis** (nested data structure):
+- `track_id` (int): Track ID from Feature 001's TrackedCar
+- `bounding_box` (BoundingBox): Current frame bounding box from Feature 001's DetectionResult
+- `confidence` (float): Detection confidence from Feature 001's DetectionResult
+- `class_name` (str): Detected class name from Feature 001's DetectionResult
+- `left_crossing_frame` (Optional[int]): Frame when left was crossed (from Feature 001's TrackedCar)
+- `right_crossing_frame` (Optional[int]): Frame when right was crossed (from Feature 001's TrackedCar)
+- `car_rightmost_x` (int): Computed rightmost X coordinate (BoundingBox.x2 from Feature 001)
+
+**CrossingAnalysis** (nested data structure):
+- `track_id` (int): Track ID of car being analyzed
+- `coordinate_type` (str): "left" or "right" coordinate being checked
+- `coordinate_value` (int): Coordinate value from Feature 001's Configuration
+- `car_rightmost_x` (int): Car's rightmost X position (BoundingBox.x2)
+- `comparison_result` (str): Formatted comparison string (e.g., "car_rightmost_x >= coordinate_value" or "car_rightmost_x < coordinate_value")
+- `condition_met` (bool): Whether crossing condition was met (car_rightmost_x >= coordinate_value)
+- `crossing_state` (str): Explanation of current crossing state (e.g., "left_crossing_frame is None", "left already crossed, waiting for right")
+- `crossing_detected` (bool): Whether crossing event was detected this frame (from Feature 001's CoordinateCrossingDetector)
+
