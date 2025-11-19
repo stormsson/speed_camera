@@ -386,10 +386,11 @@ class MainWindow(QMainWindow):
         
 
         # Create and start detection worker
+        # Pass frame_index (0-indexed) to match detection system expectations
         self._detection_worker = DetectionWorker(
             self.detection_controller,
             frame_array,
-            frame_number
+            frame_index
         )
         self._detection_worker.detection_complete.connect(self._on_detection_complete)
         self._detection_worker.detection_error.connect(self._on_detection_error)

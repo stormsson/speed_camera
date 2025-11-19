@@ -4,6 +4,7 @@ import sys
 import time
 import json
 import csv
+import logging
 from io import StringIO
 from typing import Optional, Tuple, List
 
@@ -100,19 +101,20 @@ def process_video(
         
         for frame_number, frame in video_processor.iter_frames():
             frames_processed += 1
+            frame_one_based = frame_number + 1
 
             # Detect cars
-            detections = car_detector.detect(frame, frame_number)
+            detections = car_detector.detect(frame, frame_one_based)
             detections_count += len(detections)
 
             # Update tracking
-            tracked_cars = car_tracker.update(detections, frame_number)
+            tracked_cars = car_tracker.update(detections, frame_one_based)
 
             # Check for coordinate crossings
             for tracked_car in tracked_cars:
                 crossing_events = crossing_detector.detect_crossings(
                     tracked_car, 
-                    frame_number,
+                    frame_one_based,
                     debug=debug,
                     video_processor=video_processor if debug else None,
                     debug_image_generator=debug_image_generator
@@ -369,7 +371,8 @@ def cli(
     CONFIG_FILE: Path to YAML configuration file
     """
     # Setup logging
-    setup_logging(level=10 if verbose else 20, log_file=log_file, verbose=verbose)
+    # Without -v: WARNING and above only. With -v: DEBUG and above
+    setup_logging(level=logging.DEBUG if verbose else logging.WARNING, log_file=log_file, verbose=verbose)
 
     try:
         # Load configuration

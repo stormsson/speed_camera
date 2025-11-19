@@ -19,21 +19,19 @@ class JSONFormatter(logging.Formatter):
             "message": record.getMessage(),
         }
 
-        # Add extra fields if present
-        if hasattr(record, "frame_number"):
-            log_data["frame_number"] = record.frame_number
-        if hasattr(record, "track_id"):
-            log_data["track_id"] = record.track_id
-        if hasattr(record, "confidence"):
-            log_data["confidence"] = record.confidence
-        if hasattr(record, "event_type"):
-            log_data["event_type"] = record.event_type
-        if hasattr(record, "coordinate_type"):
-            log_data["coordinate_type"] = record.coordinate_type
-        if hasattr(record, "speed_kmh"):
-            log_data["speed_kmh"] = record.speed_kmh
-        if hasattr(record, "processing_time"):
-            log_data["processing_time"] = record.processing_time
+        # Add all extra fields from the record
+        # Exclude standard LogRecord attributes to avoid noise
+        standard_attrs = {
+            'name', 'msg', 'args', 'created', 'filename', 'funcName',
+            'levelname', 'levelno', 'lineno', 'module', 'msecs', 'message',
+            'pathname', 'process', 'processName', 'relativeCreated', 'thread',
+            'threadName', 'exc_info', 'exc_text', 'stack_info', 'getMessage'
+        }
+        
+        # Include all non-standard attributes (these are the extra fields)
+        for key, value in record.__dict__.items():
+            if key not in standard_attrs:
+                log_data[key] = value
 
         # Add exception info if present
         if record.exc_info:
@@ -61,11 +59,12 @@ def setup_logging(
     if verbose:
         level = logging.DEBUG
 
-    logger = logging.getLogger("car_speed_detection")
-    logger.setLevel(level)
+    # Get root logger to configure all loggers
+    root_logger = logging.getLogger()
+    root_logger.setLevel(level)
 
     # Remove existing handlers to avoid duplicates
-    logger.handlers.clear()
+    root_logger.handlers.clear()
 
     # Create JSON formatter
     formatter = JSONFormatter()
@@ -74,16 +73,16 @@ def setup_logging(
     console_handler = logging.StreamHandler(sys.stderr)
     console_handler.setLevel(level)
     console_handler.setFormatter(formatter)
-    logger.addHandler(console_handler)
+    root_logger.addHandler(console_handler)
 
     # File handler if log_file is specified
     if log_file:
         file_handler = logging.FileHandler(log_file, mode="a", encoding="utf-8")
         file_handler.setLevel(level)
         file_handler.setFormatter(formatter)
-        logger.addHandler(file_handler)
+        root_logger.addHandler(file_handler)
 
-    return logger
+    return root_logger
 
 
 def get_logger(name: str = "car_speed_detection") -> logging.Logger:

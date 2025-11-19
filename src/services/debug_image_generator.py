@@ -182,11 +182,11 @@ class DebugImageGenerator:
             self._draw_bounding_box(debug_img, detection, color=(0, 255, 0), thickness=2)
             
             # Draw coordinate lines (red)
-            self._draw_coordinate_lines(debug_img, color=(0, 0, 255), thickness=2)
+            self._draw_coordinate_lines(debug_img, color=(0, 0, 255), thickness=1)
             
             # Format and draw criteria text (white)
             criteria_text = self._format_criteria_text(event, detection)
-            self._draw_text(debug_img, criteria_text, position=(10, 30), color=(255, 255, 255))
+            self._draw_text(debug_img, criteria_text, position=(10, 30), color=(0, 0, 0))
             
             # Generate filename
             filename = f"crossing_{frame_number}.png"
