@@ -4,20 +4,15 @@ import os
 from pathlib import Path
 from PySide6.QtWidgets import (
     QMainWindow,
-    QMenuBar,
-    QMenu,
+
     QFileDialog,
     QMessageBox,
-    QStatusBar,
     QWidget,
     QVBoxLayout,
-    QHBoxLayout,
     QLabel,
     QDockWidget
 )
 from PySide6.QtCore import Qt, QEvent
-import cv2
-import numpy as np
 
 from src.gui.widgets.video_display import VideoDisplayWidget
 from src.gui.widgets.coordinate_overlay import CoordinateOverlayWidget

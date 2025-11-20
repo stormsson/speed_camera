@@ -14,9 +14,15 @@ class CarDetector:
     """Detects cars in video frames using YOLO."""
 
     # YOLO class ID for "car" (COCO dataset)
-    CAR_CLASS_ID = 2
+    TRACKED_CLASSES = [
+        2, # car
+        4, # motorcycle
+        6, # bus
+        8, # truck
+    ]
+    
 
-    def __init__(self, confidence_threshold: float = 0.7, model_name: str = "yolov8s.pt"):
+    def __init__(self, confidence_threshold: float = 0.7, model_name: str = "yolov8n.pt"):
         """
         Initialize car detector.
 
@@ -57,7 +63,7 @@ class CarDetector:
                     continue
 
                 # Filter by class (only cars)
-                if class_id != self.CAR_CLASS_ID:
+                if class_id not in self.TRACKED_CLASSES:
                     continue
 
                 # Create bounding box
