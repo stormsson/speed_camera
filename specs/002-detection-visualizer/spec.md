@@ -12,11 +12,11 @@
 ### Session 2025-01-27
 
 - Q: What is the primary input method for the GUI application? → A: JSON file is the primary input method (user opens JSON result file from Feature 001 CLI, system auto-loads video and config from JSON paths)
-- Q: When should car detection run to identify bounding boxes? → A: Run live detection on-demand when user navigates to a frame (detect cars in current frame using Feature 001's CarDetector service)
+- Q: When should car detection run to identify bounding boxes? → A: Run live detection on-demand when user navigates to a frame (detect cars in current frame using Feature 001's VehicleDetector service)
 - Q: How should car tracking state be managed during frame navigation? → A: Maintain tracking state across navigation (tracking state persists, allowing forward/backward navigation while preserving track IDs)
 - Q: How should speed_measurements from JSON be used? → A: Use JSON speed_measurements to highlight known cars (track_id, crossing frames) and show expected results alongside live detection
 - Q: How should coordinate crossing detection work? → A: Run live crossing detection on each frame AND highlight expected crossings from JSON (show both live detected crossings and expected crossing frames from speed_measurements)
-- Q: Which coordinate space should the debug panel use for coordinate crossing analysis? → A: Use scaled video coordinate space (after downsize_video scaling if applicable, matching what the detection system uses). This ensures car_rightmost_x (from bounding boxes) and coordinate_value comparisons are in the same coordinate space, matching the actual detection logic.
+- Q: Which coordinate space should the debug panel use for coordinate crossing analysis? → A: Use scaled video coordinate space (after downsize_video scaling if applicable, matching what the detection system uses). This ensures vehicle_rightmost_x (from bounding boxes) and coordinate_value comparisons are in the same coordinate space, matching the actual detection logic.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -64,7 +64,7 @@ A user views the video frames and sees visual indicators showing the car detecti
 
 **Acceptance Scenarios**:
 
-1. **Given** a video is loaded and user navigates to a frame, **When** the system runs live detection on the current frame (using Feature 001's CarDetector service), **Then** the system displays a bounding box around each detected car (using Feature 001's BoundingBox from DetectionResult)
+1. **Given** a video is loaded and user navigates to a frame, **When** the system runs live detection on the current frame (using Feature 001's VehicleDetector service), **Then** the system displays a bounding box around each detected car (using Feature 001's BoundingBox from DetectionResult)
 2. **Given** a car is being tracked across frames (using Feature 001's CarTracker service), **When** the user navigates forward or backward through frames, **Then** the system maintains tracking state and visual indicators showing the same car's identity across frames (using Feature 001's TrackedCar model with track_id), preserving track IDs regardless of navigation direction
 3. **Given** a car crosses the left coordinate (detected live by Feature 001's CoordinateCrossingDetector), **When** the crossing occurs, **Then** the system highlights or marks this event visually (using Feature 001's CoordinateCrossingEvent model)
 4. **Given** a car crosses the right coordinate (detected live by Feature 001's CoordinateCrossingDetector), **When** the crossing occurs, **Then** the system highlights or marks this event visually (using Feature 001's CoordinateCrossingEvent model)
@@ -85,8 +85,8 @@ A user encounters an unexpected detection event (e.g., a crossing event is detec
 **Acceptance Scenarios**:
 
 1. **Given** a video frame is displayed with detection results, **When** the user opens or views the debug information panel, **Then** the system displays detailed detection information for the current frame including: YOLO detection results (bounding box coordinates, confidence scores, class information), tracked car information (track_id, crossing state), and coordinate crossing analysis
-2. **Given** a crossing event is detected on the current frame, **When** the user views the debug panel, **Then** the system displays the reason why the crossing was detected, including: car_rightmost_x value, coordinate_value being crossed, the comparison logic (e.g., "car_rightmost_x >= coordinate_value"), and whether the condition was met
-3. **Given** a crossing event is NOT detected on the current frame but a car is present, **When** the user views the debug panel, **Then** the system displays why no crossing was detected, including: car_rightmost_x value, coordinate_value, the comparison result (e.g., "car_rightmost_x < coordinate_value"), and the current crossing state (e.g., "left_crossing_frame is None" or "left already crossed, waiting for right")
+2. **Given** a crossing event is detected on the current frame, **When** the user views the debug panel, **Then** the system displays the reason why the crossing was detected, including: vehicle_rightmost_x value, coordinate_value being crossed, the comparison logic (e.g., "vehicle_rightmost_x >= coordinate_value"), and whether the condition was met
+3. **Given** a crossing event is NOT detected on the current frame but a car is present, **When** the user views the debug panel, **Then** the system displays why no crossing was detected, including: vehicle_rightmost_x value, coordinate_value, the comparison result (e.g., "vehicle_rightmost_x < coordinate_value"), and the current crossing state (e.g., "left_crossing_frame is None" or "left already crossed, waiting for right")
 4. **Given** the user navigates to a different frame, **When** the frame changes, **Then** the debug panel automatically updates to show detection information for the new frame
 5. **Given** multiple cars are detected in a frame, **When** the user views the debug panel, **Then** the system displays detection information for each tracked car separately, allowing the user to understand the detection state for each car individually
 6. **Given** detection results from JSON file are available for the current frame, **When** the user views the debug panel, **Then** the system displays both live detection results and expected results from JSON, allowing comparison to identify discrepancies
@@ -123,7 +123,7 @@ A user encounters an unexpected detection event (e.g., a crossing event is detec
 - **FR-009**: System MUST display the current frame number and total frame count
 - **FR-010**: System MUST show the current frame number as a small editable textbox. When the user writes a different frame number in the textbox, the system MUST change the frame shown in the GUI to that frame number
 - **FR-011**: System MUST handle navigation at video boundaries (first/last frame) appropriately
-- **FR-012**: System MUST run live car detection on-demand when user navigates to a frame (using Feature 001's CarDetector service) and visualize bounding boxes on the current frame (using Feature 001's BoundingBox from DetectionResult model)
+- **FR-012**: System MUST run live car detection on-demand when user navigates to a frame (using Feature 001's VehicleDetector service) and visualize bounding boxes on the current frame (using Feature 001's BoundingBox from DetectionResult model)
 - **FR-013**: System MUST maintain tracking state across frame navigation (forward and backward) using Feature 001's CarTracker service and visualize car tracking information (using Feature 001's TrackedCar model with track_id attribute), preserving consistent track IDs as user navigates
 - **FR-014**: System MUST run live crossing detection on each frame (using Feature 001's CoordinateCrossingDetector) AND highlight expected crossing frames from JSON speed_measurements (left_crossing_frame, right_crossing_frame), showing both live detected crossings and expected crossings visually
 - **FR-015**: System MUST visually distinguish between live detected crossing events (from CoordinateCrossingDetector) and expected crossing frames (from JSON speed_measurements) when displaying crossing highlights
@@ -133,8 +133,8 @@ A user encounters an unexpected detection event (e.g., a crossing event is detec
 - **FR-019**: System MUST visually distinguish between expected results from JSON (e.g., known track_ids, crossing frames) and live detection results (e.g., current bounding boxes, live tracking)
 - **FR-020**: System MUST provide a debug information panel or window that displays detailed detection information for the current frame
 - **FR-021**: System MUST display in the debug panel, for each detected car in the current frame: YOLO detection results (bounding box coordinates from Feature 001's BoundingBox, confidence score from Feature 001's DetectionResult, class_name), tracked car information (track_id from Feature 001's TrackedCar, left_crossing_frame, right_crossing_frame), and coordinate crossing analysis
-- **FR-022**: System MUST display in the debug panel, when a crossing event is detected: the reason why the crossing was detected, including car_rightmost_x value (from Feature 001's CoordinateCrossingEvent or computed from BoundingBox.x2), coordinate_value being crossed (from Feature 001's Configuration, scaled to match video coordinate space if downsize_video is used), the comparison logic used (e.g., "car_rightmost_x >= coordinate_value"), and whether the condition was met. Coordinate values MUST be in the same coordinate space as bounding boxes (scaled video coordinate space after downsize_video scaling if applicable).
-- **FR-023**: System MUST display in the debug panel, when a crossing event is NOT detected but a car is present: why no crossing was detected, including car_rightmost_x value (computed from BoundingBox.x2), coordinate_value (from Feature 001's Configuration, scaled to match video coordinate space if downsize_video is used), the comparison result (e.g., "car_rightmost_x < coordinate_value"), and the current crossing state (e.g., whether left_crossing_frame or right_crossing_frame is None, or if left already crossed waiting for right). Coordinate values MUST be in the same coordinate space as bounding boxes (scaled video coordinate space after downsize_video scaling if applicable).
+- **FR-022**: System MUST display in the debug panel, when a crossing event is detected: the reason why the crossing was detected, including vehicle_rightmost_x value (from Feature 001's CoordinateCrossingEvent or computed from BoundingBox.x2), coordinate_value being crossed (from Feature 001's Configuration, scaled to match video coordinate space if downsize_video is used), the comparison logic used (e.g., "vehicle_rightmost_x >= coordinate_value"), and whether the condition was met. Coordinate values MUST be in the same coordinate space as bounding boxes (scaled video coordinate space after downsize_video scaling if applicable).
+- **FR-023**: System MUST display in the debug panel, when a crossing event is NOT detected but a car is present: why no crossing was detected, including vehicle_rightmost_x value (computed from BoundingBox.x2), coordinate_value (from Feature 001's Configuration, scaled to match video coordinate space if downsize_video is used), the comparison result (e.g., "vehicle_rightmost_x < coordinate_value"), and the current crossing state (e.g., whether left_crossing_frame or right_crossing_frame is None, or if left already crossed waiting for right). Coordinate values MUST be in the same coordinate space as bounding boxes (scaled video coordinate space after downsize_video scaling if applicable).
 - **FR-024**: System MUST update the debug panel automatically when the user navigates to a different frame, showing detection information for the new frame
 - **FR-025**: System MUST display detection information separately for each tracked car when multiple cars are detected in a frame, allowing users to understand the detection state for each car individually
 - **FR-026**: System MUST display in the debug panel both live detection results (from Feature 001's services) and expected results from JSON speed_measurements when available, allowing users to compare and identify discrepancies
@@ -157,7 +157,7 @@ A user encounters an unexpected detection event (e.g., a crossing event is detec
 - **Debug Information**: Represents detailed detection analysis data displayed in the debug panel. Key attributes:
   - Current frame detection results (from Feature 001's DetectionResult model: bounding_box coordinates, confidence, class_name)
   - Tracked car state (from Feature 001's TrackedCar model: track_id, left_crossing_frame, right_crossing_frame)
-  - Coordinate crossing analysis (car_rightmost_x value from BoundingBox.x2, coordinate_value from Configuration scaled to match video coordinate space if downsize_video is used, comparison logic and result). Both values MUST be in the same coordinate space (scaled video coordinate space after downsize_video scaling if applicable).
+  - Coordinate crossing analysis (vehicle_rightmost_x value from BoundingBox.x2, coordinate_value from Configuration scaled to match video coordinate space if downsize_video is used, comparison logic and result). Both values MUST be in the same coordinate space (scaled video coordinate space after downsize_video scaling if applicable).
   - Crossing event explanation (why crossing was detected or not detected based on Feature 001's CoordinateCrossingDetector logic)
   - Comparison data (live detection results vs expected results from JSON speed_measurements)
 
@@ -190,13 +190,13 @@ The visualizer MUST use or display data from the following Feature 001 data mode
 
 - **SpeedMeasurement** (`src/models/detection_result.py`): Represents calculated speed results with attributes (speed_kmh, frame_count, track_id, left_crossing_frame, right_crossing_frame, confidence). The visualizer MUST extract speed_measurements from JSON input file and use them to highlight known cars and display expected results alongside live detection.
 
-- **CoordinateCrossingEvent** (`src/models/detection_result.py`): Represents coordinate crossing events with attributes (track_id, frame_number, coordinate_type, coordinate_value, car_rightmost_x, confidence). The visualizer highlights these crossing events on frames.
+- **CoordinateCrossingEvent** (`src/models/detection_result.py`): Represents coordinate crossing events with attributes (track_id, frame_number, coordinate_type, coordinate_value, vehicle_rightmost_x, confidence). The visualizer highlights these crossing events on frames.
 
 ### Services (from Feature 001)
 
 The visualizer MUST integrate with or reuse the following Feature 001 services:
 
-- **CarDetector** (`src/services/car_detector.py`): YOLO-based car detection service that produces DetectionResult objects. The visualizer uses this service to detect cars in frames or displays results from this service.
+- **VehicleDetector** (`src/services/car_detector.py`): YOLO-based car detection service that produces DetectionResult objects. The visualizer uses this service to detect cars in frames or displays results from this service.
 
 - **CarTracker** (`src/services/car_tracker.py`): Car tracking service using IoU matching that maintains TrackedCar objects across frames. The visualizer uses this service to track cars and maintain consistent track IDs. Tracking state MUST persist across forward and backward frame navigation to preserve track identity.
 
@@ -223,7 +223,7 @@ The visualizer MUST handle the `downsize_video` parameter correctly, scaling coo
 - Configuration files use the same format as Feature 001's Configuration model (left_coordinate, right_coordinate, distance, fps, downsize_video)
 - The GUI application is intended for debugging, visualization, and validation purposes
 - Users have access to both video files and configuration files that they want to visualize
-- The application runs detection processing on-demand when user navigates to frames using Feature 001's CarDetector service (live detection, not pre-computed)
+- The application runs detection processing on-demand when user navigates to frames using Feature 001's VehicleDetector service (live detection, not pre-computed)
 - Coordinate values are provided in pixels relative to the video frame width (matching Feature 001's coordinate system)
 - The application is used on desktop platforms with sufficient screen resolution to display video frames clearly
 - The user has specified a preference for a specific GUI framework implementation, but the specification remains technology-agnostic to allow for implementation flexibility

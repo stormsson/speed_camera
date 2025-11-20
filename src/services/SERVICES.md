@@ -4,7 +4,7 @@ This document provides detailed documentation for all service classes in the `sr
 
 ## Table of Contents
 
-1. [CarDetector](#cardetector)
+1. [VehicleDetector](#vehicledetector)
 2. [CarTracker](#cartracker)
 3. [CoordinateCrossingDetector](#coordinatecrossingdetector)
 4. [SpeedCalculator](#speedcalculator)
@@ -16,15 +16,15 @@ This document provides detailed documentation for all service classes in the `sr
 
 ---
 
-## CarDetector
+## VehicleDetector
 
-**File:** `car_detector.py`
+**File:** `vehicle_detector.py`
 
 **Purpose:** Detects cars in video frames using YOLO object detection model.
 
 ### Overview
 
-The `CarDetector` class uses the Ultralytics YOLO model to detect cars in individual video frames. It filters detections by confidence threshold and class ID (only cars from the COCO dataset).
+The `VehicleDetector` class uses the Ultralytics YOLO model to detect cars in individual video frames. It filters detections by confidence threshold and class ID (only cars from the COCO dataset).
 
 ### Key Features
 
@@ -781,13 +781,13 @@ Used by `DetectionResult` to represent the spatial location of detected cars. Th
 - `class_name` (str): Detected class name (e.g., "car")
 
 **Usage:**
-- Created by `CarDetector.detect()` for each detected car
+- Created by `VehicleDetector.detect()` for each detected car
 - Collected into lists by `CarTracker` to maintain detection history
 - Used by `CoordinateCrossingDetector` to determine crossing events
 - Referenced by `DebugImageGenerator` for visualization
 
 **Lifecycle:**
-1. Created when `CarDetector` detects a car in a frame
+1. Created when `VehicleDetector` detects a car in a frame
 2. Added to `TrackedCar.detections` list by `CarTracker`
 3. Referenced during crossing detection to get car position
 4. Used in speed calculation to compute average confidence
@@ -837,7 +837,7 @@ Used by `DetectionResult` to represent the spatial location of detected cars. Th
 - `frame_number` (int): Frame when crossing occurred
 - `coordinate_type` (str): "left" or "right"
 - `coordinate_value` (int): X-coordinate value that was crossed
-- `car_rightmost_x` (int): X-coordinate of car rightmost edge when crossing occurred
+- `vehicle_rightmost_x` (int): X-coordinate of car rightmost edge when crossing occurred
 - `confidence` (float): Detection confidence at crossing frame
 
 **Usage:**
@@ -947,7 +947,7 @@ If video resizing is enabled, `width` and `height` reflect the resized dimension
 The services work together in the following pipeline:
 
 1. **VideoProcessor** loads video and provides frames
-2. **CarDetector** detects cars in each frame
+2. **VehicleDetector** detects cars in each frame
 3. **CarTracker** tracks detected cars across frames
 4. **CoordinateCrossingDetector** detects when cars cross coordinates
 5. **SpeedCalculator** calculates speed from crossing events
@@ -989,7 +989,7 @@ else:
     crossing_detector = CoordinateCrossingDetector(config)
 
 # Initialize services
-car_detector = CarDetector(confidence_threshold=confidence_threshold)
+car_detector = VehicleDetector(confidence_threshold=confidence_threshold)
 car_tracker = CarTracker()
 speed_calculator = SpeedCalculator(config)
 
@@ -1032,7 +1032,7 @@ for frame_number, frame in video_processor.iter_frames():
 
 **Processing Steps:**
 
-1. **Detection (`CarDetector.detect`)**:
+1. **Detection (`VehicleDetector.detect`)**:
    - Runs YOLO inference on the frame
    - Filters by confidence threshold and class ID
    - Returns list of [DetectionResult](#detectionresult) objects

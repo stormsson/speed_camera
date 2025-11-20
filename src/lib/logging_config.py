@@ -85,12 +85,12 @@ def setup_logging(
     return root_logger
 
 
-def get_logger(name: str = "car_speed_detection") -> logging.Logger:
+def get_logger(name: str = "vehicle_speed_detection") -> logging.Logger:
     """
     Get a logger instance.
 
     Args:
-        name: Logger name (default: "car_speed_detection")
+        name: Logger name (default: "vehicle_speed_detection")
 
     Returns:
         Logger instance

@@ -13,12 +13,12 @@ Build a PySide6 GUI application that visualizes the car detection process from F
 - Compare live detection with expected results from JSON
 - **Debug unexpected detection events** with detailed information panel showing why detection events occurred or did not occur
 
-Technical approach: Direct integration with Feature 001's services (CarDetector, CarTracker, CoordinateCrossingDetector), using QLabel/QPixmap for frame display and QPainter for overlays. Frame-by-frame navigation using OpenCV VideoCapture with frame seeking.
+Technical approach: Direct integration with Feature 001's services (VehicleDetector, CarTracker, CoordinateCrossingDetector), using QLabel/QPixmap for frame display and QPainter for overlays. Frame-by-frame navigation using OpenCV VideoCapture with frame seeking.
 
 ## Technical Context
 
 **Language/Version**: Python 3.11+  
-**Primary Dependencies**: PySide6, OpenCV (cv2), numpy, Feature 001 services (CarDetector, CarTracker, CoordinateCrossingDetector)  
+**Primary Dependencies**: PySide6, OpenCV (cv2), numpy, Feature 001 services (VehicleDetector, CarTracker, CoordinateCrossingDetector)  
 **Storage**: N/A (in-memory state, file-based JSON input)  
 **Testing**: pytest, pytest-qt for GUI testing  
 **Target Platform**: Desktop (Windows, macOS, Linux)  
@@ -32,7 +32,7 @@ Technical approach: Direct integration with Feature 001's services (CarDetector,
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
 ### I. Accuracy-First (NON-NEGOTIABLE)
-✅ **PASS**: Debug panel (FR-020 through FR-026) provides detailed detection analysis to validate accuracy. Shows exact comparison values (car_rightmost_x vs coordinate_value) and crossing logic, enabling users to verify detection correctness.
+✅ **PASS**: Debug panel (FR-020 through FR-026) provides detailed detection analysis to validate accuracy. Shows exact comparison values (vehicle_rightmost_x vs coordinate_value) and crossing logic, enabling users to verify detection correctness.
 
 ### II. Test-Driven Development (NON-NEGOTIABLE)
 ✅ **PASS**: GUI components testable with pytest-qt. Debug panel data display can be unit tested. Detection analysis logic can be tested independently.
@@ -41,7 +41,7 @@ Technical approach: Direct integration with Feature 001's services (CarDetector,
 ✅ **PASS**: Debug panel provides detailed logging of detection state per frame. Shows confidence scores, bounding box positions, and crossing analysis. Enables debugging and validation of detection accuracy.
 
 ### IV. Modular Video Processing
-✅ **PASS**: Reuses Feature 001's modular services (CarDetector, CarTracker, CoordinateCrossingDetector). Debug panel is separate component that analyzes detection results.
+✅ **PASS**: Reuses Feature 001's modular services (VehicleDetector, CarTracker, CoordinateCrossingDetector). Debug panel is separate component that analyzes detection results.
 
 ### V. Data Management
 ✅ **PASS**: JSON input file provides traceability. Debug panel shows detection state linked to frame numbers and configuration.
@@ -150,14 +150,14 @@ Represents detailed detection analysis data displayed in the debug panel.
 - `class_name` (str): Detected class
 - `left_crossing_frame` (Optional[int]): Frame when left was crossed (if any)
 - `right_crossing_frame` (Optional[int]): Frame when right was crossed (if any)
-- `car_rightmost_x` (int): Computed rightmost X coordinate (BoundingBox.x2)
+- `vehicle_rightmost_x` (int): Computed rightmost X coordinate (BoundingBox.x2)
 
 **CrossingAnalysis** (nested):
 - `track_id` (int)
 - `coordinate_type` (str): "left" or "right"
 - `coordinate_value` (int): Coordinate being checked
-- `car_rightmost_x` (int): Car's rightmost X position
-- `comparison_result` (str): "car_rightmost_x >= coordinate_value" or "car_rightmost_x < coordinate_value"
+- `vehicle_rightmost_x` (int): Car's rightmost X position
+- `comparison_result` (str): "vehicle_rightmost_x >= coordinate_value" or "vehicle_rightmost_x < coordinate_value"
 - `condition_met` (bool): Whether crossing condition was met
 - `crossing_state` (str): Explanation of current crossing state (e.g., "left_crossing_frame is None", "left already crossed, waiting for right")
 - `crossing_detected` (bool): Whether crossing event was detected this frame
@@ -173,8 +173,8 @@ Represents detailed detection analysis data displayed in the debug panel.
 - Display of YOLO detection results (bounding box coordinates, confidence, class_name)
 - Display of tracked car information (track_id, left_crossing_frame, right_crossing_frame)
 - Display of coordinate crossing analysis:
-  - When crossing detected: car_rightmost_x, coordinate_value, comparison logic, condition met status
-  - When crossing NOT detected: car_rightmost_x, coordinate_value, comparison result, crossing state explanation
+  - When crossing detected: vehicle_rightmost_x, coordinate_value, comparison logic, condition met status
+  - When crossing NOT detected: vehicle_rightmost_x, coordinate_value, comparison result, crossing state explanation
 - Comparison section showing live detection vs expected JSON results
 - Auto-update on frame navigation
 

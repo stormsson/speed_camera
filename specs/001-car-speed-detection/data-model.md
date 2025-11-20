@@ -53,7 +53,7 @@ Represents a single car detection in a video frame.
 - `class_name` (str): Detected class name (e.g., "car")
 
 **Relationships**:
-- Created by: CarDetector
+- Created by: VehicleDetector
 - Used by: CarTracker, CoordinateCrossingDetector
 
 ### BoundingBox
@@ -105,7 +105,7 @@ Represents an event when a car crosses a measurement coordinate.
 - `frame_number` (int): Frame when crossing occurred
 - `coordinate_type` (str): "left" or "right"
 - `coordinate_value` (int): X-coordinate value that was crossed
-- `car_rightmost_x` (int): X-coordinate of car right side when crossing occurred
+- `vehicle_rightmost_x` (int): X-coordinate of car right side when crossing occurred
 - `confidence` (float): Detection confidence at crossing frame
 
 **Relationships**:
@@ -162,7 +162,7 @@ Represents the overall result of processing a video file.
 
 1. **Configuration Loading**: YAML file → Configuration entity
 2. **Video Loading**: MP4 file → VideoMetadata + frame stream
-3. **Frame Processing**: Frame → DetectionResult (via CarDetector)
+3. **Frame Processing**: Frame → DetectionResult (via VehicleDetector)
 4. **Tracking**: DetectionResult → TrackedCar (via CarTracker)
 5. **Crossing Detection**: TrackedCar + Configuration → CoordinateCrossingEvent (via CoordinateCrossingDetector)
 6. **Speed Calculation**: CoordinateCrossingEvent(s) + Configuration → SpeedMeasurement (via SpeedCalculator)

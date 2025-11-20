@@ -110,8 +110,8 @@ class DebugPanelWidget(QWidget):
                 detection = tracked_car.detections[-1]
 
             # Format car analysis
-            car_analysis = self._format_car_analysis(tracked_car, detection)
-            debug_text += car_analysis
+            vehicle_analysis = self._format_vehicle_analysis(tracked_car, detection)
+            debug_text += vehicle_analysis
 
             # Compute and format crossing analysis
             if config:
@@ -133,7 +133,7 @@ class DebugPanelWidget(QWidget):
 
         self.debug_text.setText(debug_text)
 
-    def _format_car_analysis(
+    def _format_vehicle_analysis(
         self,
         tracked_car: TrackedCar,
         detection: Optional[DetectionResult]
@@ -200,7 +200,7 @@ class DebugPanelWidget(QWidget):
             # No detection, can't compute crossing analysis
             return analysis
 
-        car_rightmost_x = detection.bounding_box.x2
+        vehicle_rightmost_x = detection.bounding_box.x2
 
         # Analyze left coordinate
         left_crossing_detected = any(
@@ -210,8 +210,8 @@ class DebugPanelWidget(QWidget):
             for event in crossing_events
         )
 
-        left_condition_met = car_rightmost_x >= left_coordinate
-        left_comparison = f"{car_rightmost_x} >= {left_coordinate}" if left_condition_met else f"{car_rightmost_x} < {left_coordinate}"
+        left_condition_met = vehicle_rightmost_x >= left_coordinate
+        left_comparison = f"{vehicle_rightmost_x} >= {left_coordinate}" if left_condition_met else f"{vehicle_rightmost_x} < {left_coordinate}"
 
         if tracked_car.left_crossing_frame is None:
             left_state = "left_crossing_frame is None"
@@ -222,7 +222,7 @@ class DebugPanelWidget(QWidget):
             track_id=track_id,
             coordinate_type="left",
             coordinate_value=left_coordinate,
-            car_rightmost_x=car_rightmost_x,
+            vehicle_rightmost_x=vehicle_rightmost_x,
             comparison_result=left_comparison,
             condition_met=left_condition_met,
             crossing_state=left_state,
@@ -238,8 +238,8 @@ class DebugPanelWidget(QWidget):
                 for event in crossing_events
             )
 
-            right_condition_met = car_rightmost_x >= right_coordinate
-            right_comparison = f"{car_rightmost_x} >= {right_coordinate}" if right_condition_met else f"{car_rightmost_x} < {right_coordinate}"
+            right_condition_met = vehicle_rightmost_x >= right_coordinate
+            right_comparison = f"{vehicle_rightmost_x} >= {right_coordinate}" if right_condition_met else f"{vehicle_rightmost_x} < {right_coordinate}"
 
             if tracked_car.right_crossing_frame is None:
                 right_state = "Left already crossed, waiting for right"
@@ -250,7 +250,7 @@ class DebugPanelWidget(QWidget):
                 track_id=track_id,
                 coordinate_type="right",
                 coordinate_value=right_coordinate,
-                car_rightmost_x=car_rightmost_x,
+                vehicle_rightmost_x=vehicle_rightmost_x,
                 comparison_result=right_comparison,
                 condition_met=right_condition_met,
                 crossing_state=right_state,
@@ -262,8 +262,8 @@ class DebugPanelWidget(QWidget):
                 track_id=track_id,
                 coordinate_type="right",
                 coordinate_value=right_coordinate,
-                car_rightmost_x=car_rightmost_x,
-                comparison_result=f"{car_rightmost_x} < {right_coordinate} (left not crossed yet)",
+                vehicle_rightmost_x=vehicle_rightmost_x,
+                comparison_result=f"{vehicle_rightmost_x} < {right_coordinate} (left not crossed yet)",
                 condition_met=False,
                 crossing_state="Left not crossed yet, cannot check right",
                 crossing_detected=False
@@ -295,7 +295,7 @@ class DebugPanelWidget(QWidget):
 
             if analysis.crossing_detected:
                 text += f"  Coordinate Value: {analysis.coordinate_value}\n"
-                text += f"  Car Rightmost X: {analysis.car_rightmost_x}\n"
+                text += f"  Car Rightmost X: {analysis.vehicle_rightmost_x}\n"
                 text += f"  Comparison: {analysis.comparison_result}\n"
                 text += f"  Condition Met: {'Yes' if analysis.condition_met else 'No'}\n"
                 # Find the actual frame number from crossing events
@@ -303,7 +303,7 @@ class DebugPanelWidget(QWidget):
                 text += f"  Crossing Detected: Yes ({crossing_frame})\n"
             else:
                 text += f"  Coordinate Value: {analysis.coordinate_value}\n"
-                text += f"  Car Rightmost X: {analysis.car_rightmost_x}\n"
+                text += f"  Car Rightmost X: {analysis.vehicle_rightmost_x}\n"
                 text += f"  Comparison: {analysis.comparison_result}\n"
                 text += f"  Condition Met: {'Yes' if analysis.condition_met else 'No'}\n"
                 text += f"  Crossing State: {analysis.crossing_state}\n"

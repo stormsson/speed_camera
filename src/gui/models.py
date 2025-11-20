@@ -78,7 +78,7 @@ class TrackedCarAnalysis:
     class_name: str = ""
     left_crossing_frame: Optional[int] = None
     right_crossing_frame: Optional[int] = None
-    car_rightmost_x: int = 0
+    vehicle_rightmost_x: int = 0
 
 
 @dataclass
@@ -88,8 +88,8 @@ class CrossingAnalysis:
     track_id: int
     coordinate_type: str  # "left" or "right"
     coordinate_value: int
-    car_rightmost_x: int
-    comparison_result: str  # e.g., "car_rightmost_x >= coordinate_value"
+    vehicle_rightmost_x: int
+    comparison_result: str  # e.g., "vehicle_rightmost_x >= coordinate_value"
     condition_met: bool
     crossing_state: str  # Explanation of current crossing state
     crossing_detected: bool

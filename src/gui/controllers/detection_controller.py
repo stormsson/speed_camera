@@ -10,7 +10,7 @@ from src.models import (
     CoordinateCrossingEvent,
     Configuration
 )
-from src.services.car_detector import CarDetector
+from src.services.vehicle_detector import VehicleDetector
 from src.services.car_tracker import CarTracker
 from src.services.coordinate_crossing_detector import CoordinateCrossingDetector
 from src.lib.logging_config import get_logger
@@ -34,7 +34,7 @@ class DetectionController:
             confidence_threshold: Minimum confidence for detections
         """
         self.config = config
-        self.car_detector = CarDetector(confidence_threshold=confidence_threshold)
+        self.vehicle_detector = VehicleDetector(confidence_threshold=confidence_threshold)
         self.car_tracker = CarTracker()
         self.crossing_detector = CoordinateCrossingDetector(config)
 
@@ -53,7 +53,7 @@ class DetectionController:
         Returns:
             List of DetectionResult objects
         """
-        detections = self.car_detector.detect(frame, frame_number)
+        detections = self.vehicle_detector.detect(frame, frame_number)
         return detections
 
     def update_tracking(

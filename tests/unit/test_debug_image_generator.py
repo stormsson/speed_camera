@@ -51,7 +51,7 @@ class TestDebugImageGenerator:
                 frame_number=10,
                 coordinate_type="left",
                 coordinate_value=100,
-                car_rightmost_x=110,
+                vehicle_rightmost_x=110,
                 confidence=0.85
             )
             
@@ -83,7 +83,7 @@ class TestDebugImageGenerator:
                 frame_number=10,
                 coordinate_type="left",
                 coordinate_value=100,
-                car_rightmost_x=110,
+                vehicle_rightmost_x=110,
                 confidence=0.85
             )
             
@@ -118,7 +118,7 @@ class TestDebugImageGenerator:
                 frame_number=10,
                 coordinate_type="left",
                 coordinate_value=100,
-                car_rightmost_x=110,
+                vehicle_rightmost_x=110,
                 confidence=0.85
             )
             
@@ -158,7 +158,7 @@ class TestDebugImageGenerator:
                 frame_number=10,
                 coordinate_type="left",
                 coordinate_value=100,
-                car_rightmost_x=110,
+                vehicle_rightmost_x=110,
                 confidence=0.85
             )
             
@@ -199,7 +199,7 @@ class TestDebugImageGenerator:
                     frame_number=frame_num,
                     coordinate_type="left",
                     coordinate_value=100,
-                    car_rightmost_x=110,
+                    vehicle_rightmost_x=110,
                     confidence=0.85
                 )
                 
@@ -223,7 +223,7 @@ class TestDebugImageGenerator:
         with tempfile.TemporaryDirectory() as tmpdir:
             os.chdir(tmpdir)
             
-            # Use consistent values: bbox x2 should match car_rightmost_x
+            # Use consistent values: bbox x2 should match vehicle_rightmost_x
             bbox = BoundingBox(x1=50, y1=200, x2=110, y2=400)
             detection = DetectionResult(0, bbox, 0.85, 2, "car")
             event = CoordinateCrossingEvent(
@@ -231,7 +231,7 @@ class TestDebugImageGenerator:
                 frame_number=10,
                 coordinate_type="left",
                 coordinate_value=100,
-                car_rightmost_x=110,
+                vehicle_rightmost_x=110,
                 confidence=0.85
             )
             
@@ -241,7 +241,7 @@ class TestDebugImageGenerator:
             
             assert "bounding box x" in criteria_lower
             assert "left line coord" in criteria_lower
-            assert "110" in criteria_text  # car_rightmost_x (from bbox x2)
+            assert "110" in criteria_text  # vehicle_rightmost_x (from bbox x2)
             assert "100" in criteria_text  # left_coordinate
 
     def test_right_crossing_text_format(self, sample_config, sample_frame):
@@ -253,7 +253,7 @@ class TestDebugImageGenerator:
         with tempfile.TemporaryDirectory() as tmpdir:
             os.chdir(tmpdir)
             
-            # Use consistent values: bbox x2 should match car_rightmost_x
+            # Use consistent values: bbox x2 should match vehicle_rightmost_x
             bbox = BoundingBox(x1=450, y1=200, x2=510, y2=400)
             detection = DetectionResult(0, bbox, 0.85, 2, "car")
             event = CoordinateCrossingEvent(
@@ -261,7 +261,7 @@ class TestDebugImageGenerator:
                 frame_number=20,
                 coordinate_type="right",
                 coordinate_value=500,
-                car_rightmost_x=510,
+                vehicle_rightmost_x=510,
                 confidence=0.87
             )
             
@@ -271,7 +271,7 @@ class TestDebugImageGenerator:
             
             assert "bounding box x" in criteria_lower
             assert "right line coord" in criteria_lower
-            assert "510" in criteria_text  # car_rightmost_x (from bbox x2)
+            assert "510" in criteria_text  # vehicle_rightmost_x (from bbox x2)
             assert "500" in criteria_text  # right_coordinate
 
     def test_text_includes_frame_and_track_id(self, sample_config, sample_frame):
@@ -290,7 +290,7 @@ class TestDebugImageGenerator:
                 frame_number=123,
                 coordinate_type="left",
                 coordinate_value=100,
-                car_rightmost_x=110,
+                vehicle_rightmost_x=110,
                 confidence=0.85
             )
             

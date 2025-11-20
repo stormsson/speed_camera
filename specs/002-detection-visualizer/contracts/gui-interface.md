@@ -119,8 +119,8 @@ This contract defines the GUI interface behavior and user interactions for the v
     - Left crossing frame (left_crossing_frame from Feature 001's TrackedCar)
     - Right crossing frame (right_crossing_frame from Feature 001's TrackedCar)
   - Coordinate crossing analysis display:
-    - When crossing detected: car_rightmost_x value, coordinate_value, comparison logic (e.g., "car_rightmost_x >= coordinate_value"), condition met status
-    - When crossing NOT detected: car_rightmost_x value, coordinate_value, comparison result (e.g., "car_rightmost_x < coordinate_value"), crossing state explanation (e.g., "left_crossing_frame is None" or "left already crossed, waiting for right")
+    - When crossing detected: vehicle_rightmost_x value, coordinate_value, comparison logic (e.g., "vehicle_rightmost_x >= coordinate_value"), condition met status
+    - When crossing NOT detected: vehicle_rightmost_x value, coordinate_value, comparison result (e.g., "vehicle_rightmost_x < coordinate_value"), crossing state explanation (e.g., "left_crossing_frame is None" or "left already crossed, waiting for right")
 - Comparison section showing live detection results vs expected JSON results (when JSON speed_measurements available)
 - Empty state message when no cars detected in current frame
 
@@ -192,7 +192,7 @@ This contract defines the GUI interface behavior and user interactions for the v
 3. System MUST load and display frame at current_frame_number
 4. System MUST update frame counter display
 5. System MUST update frame number input value
-6. System MUST run live detection on new frame (using Feature 001's CarDetector)
+6. System MUST run live detection on new frame (using Feature 001's VehicleDetector)
 7. System MUST update tracking state (using Feature 001's CarTracker, maintaining state across navigation)
 8. System MUST run crossing detection on new frame (using Feature 001's CoordinateCrossingDetector)
 9. System MUST update detection visualization (live results + expected from JSON)
@@ -208,7 +208,7 @@ This contract defines the GUI interface behavior and user interactions for the v
 3. System MUST load and display frame at current_frame_number
 4. System MUST update frame counter display
 5. System MUST update frame number input value
-6. System MUST run live detection on new frame (using Feature 001's CarDetector)
+6. System MUST run live detection on new frame (using Feature 001's VehicleDetector)
 7. System MUST update tracking state (using Feature 001's CarTracker, maintaining state across backward navigation)
 8. System MUST run crossing detection on new frame (using Feature 001's CoordinateCrossingDetector)
 9. System MUST update detection visualization (live results + expected from JSON)
@@ -240,7 +240,7 @@ This contract defines the GUI interface behavior and user interactions for the v
 **Action**: Detection results available for current frame
 
 **Contract**:
-1. System MUST display live detection bounding boxes for all detections in current frame (from Feature 001's CarDetector)
+1. System MUST display live detection bounding boxes for all detections in current frame (from Feature 001's VehicleDetector)
 2. System MUST highlight expected cars from JSON speed_measurements (by track_id) with distinct visual style (e.g., dashed outline, different color)
 3. System MUST display tracking ID for each tracked car (both live and expected from JSON)
 4. System MUST display confidence score for each live detection

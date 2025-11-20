@@ -10,8 +10,8 @@ from src.lib.logging_config import get_logger
 logger = get_logger(__name__)
 
 
-class CarDetector:
-    """Detects cars in video frames using YOLO."""
+class VehicleDetector:
+    """Detects vehicles in video frames using YOLO."""
 
     # YOLO class ID for "car" (COCO dataset)
     TRACKED_CLASSES = [

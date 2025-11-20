@@ -7,19 +7,19 @@ from unittest.mock import Mock, patch, MagicMock
 from src.models import DetectionResult, BoundingBox
 
 
-class TestCarDetector:
+class TestVehicleDetector:
     """Test car detection functionality."""
 
     def test_initialize_detector(self):
         """Test initializing YOLO detector."""
-        from src.services.car_detector import CarDetector
+        from src.services.vehicle_detector import VehicleDetector
         
-        detector = CarDetector(confidence_threshold=0.5)
+        detector = VehicleDetector(confidence_threshold=0.5)
         assert detector.confidence_threshold == 0.5
 
     def test_detect_cars_in_frame(self):
         """Test detecting cars in a frame."""
-        from src.services.car_detector import CarDetector
+        from src.services.vehicle_detector import VehicleDetector
         
         # Mock YOLO model
         mock_results = MagicMock()
@@ -32,7 +32,7 @@ class TestCarDetector:
         with patch('ultralytics.YOLO') as mock_yolo:
             mock_yolo.return_value.return_value = mock_results
             
-            detector = CarDetector(confidence_threshold=0.5)
+            detector = VehicleDetector(confidence_threshold=0.5)
             frame = np.zeros((480, 640, 3), dtype=np.uint8)
             detections = detector.detect(frame, frame_number=0)
             
@@ -43,7 +43,7 @@ class TestCarDetector:
 
     def test_filter_by_confidence_threshold(self):
         """Test filtering detections by confidence threshold."""
-        from src.services.car_detector import CarDetector
+        from src.services.vehicle_detector import VehicleDetector
         
         # Mock YOLO with low confidence detection
         mock_results = MagicMock()
@@ -56,7 +56,7 @@ class TestCarDetector:
         with patch('ultralytics.YOLO') as mock_yolo:
             mock_yolo.return_value.return_value = mock_results
             
-            detector = CarDetector(confidence_threshold=0.5)
+            detector = VehicleDetector(confidence_threshold=0.5)
             frame = np.zeros((480, 640, 3), dtype=np.uint8)
             detections = detector.detect(frame, frame_number=0)
             
@@ -64,7 +64,7 @@ class TestCarDetector:
 
     def test_filter_by_car_class(self):
         """Test filtering to only car class."""
-        from src.services.car_detector import CarDetector
+        from src.services.vehicle_detector import VehicleDetector
         
         # Mock YOLO with non-car class
         mock_results = MagicMock()
@@ -77,7 +77,7 @@ class TestCarDetector:
         with patch('ultralytics.YOLO') as mock_yolo:
             mock_yolo.return_value.return_value = mock_results
             
-            detector = CarDetector(confidence_threshold=0.5)
+            detector = VehicleDetector(confidence_threshold=0.5)
             frame = np.zeros((480, 640, 3), dtype=np.uint8)
             detections = detector.detect(frame, frame_number=0)
             
@@ -85,7 +85,7 @@ class TestCarDetector:
 
     def test_multiple_cars_detection(self):
         """Test detecting multiple cars in a frame."""
-        from src.services.car_detector import CarDetector
+        from src.services.vehicle_detector import VehicleDetector
         
         # Mock YOLO with multiple detections
         mock_results = MagicMock()
@@ -98,7 +98,7 @@ class TestCarDetector:
         with patch('ultralytics.YOLO') as mock_yolo:
             mock_yolo.return_value.return_value = mock_results
             
-            detector = CarDetector(confidence_threshold=0.5)
+            detector = VehicleDetector(confidence_threshold=0.5)
             frame = np.zeros((480, 640, 3), dtype=np.uint8)
             detections = detector.detect(frame, frame_number=0)
             
@@ -107,7 +107,7 @@ class TestCarDetector:
 
     def test_detection_result_structure(self):
         """Test that detection results have correct structure."""
-        from src.services.car_detector import CarDetector
+        from src.services.vehicle_detector import VehicleDetector
         
         mock_results = MagicMock()
         mock_box = MagicMock()
@@ -119,7 +119,7 @@ class TestCarDetector:
         with patch('ultralytics.YOLO') as mock_yolo:
             mock_yolo.return_value.return_value = mock_results
             
-            detector = CarDetector(confidence_threshold=0.5)
+            detector = VehicleDetector(confidence_threshold=0.5)
             frame = np.zeros((480, 640, 3), dtype=np.uint8)
             detections = detector.detect(frame, frame_number=10)
             

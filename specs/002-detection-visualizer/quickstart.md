@@ -56,7 +56,7 @@ python -m src.gui.main
 
 **Live Detection** (automatic on frame navigation):
 1. Navigate to any frame (using buttons or frame number input)
-2. Live detection automatically runs on the current frame (using Feature 001's CarDetector)
+2. Live detection automatically runs on the current frame (using Feature 001's VehicleDetector)
 3. Bounding boxes, tracking IDs, and crossing events appear as detection completes (1-3 seconds)
 4. Expected results from JSON are highlighted alongside live detection results
 5. Known cars from JSON speed_measurements are highlighted with distinct visual style
@@ -181,7 +181,7 @@ The JSON file must be from Feature 001 CLI output and contain:
 **Solutions**:
 - Wait for detection to complete (1-3 seconds per frame)
 - Check that cars are actually present in the current frame
-- Verify Feature 001's CarDetector service is working correctly
+- Verify Feature 001's VehicleDetector service is working correctly
 - Check detection confidence threshold (may be too high)
 - Navigate to frames where cars are expected (from JSON speed_measurements)
 - Verify tracking state is maintained across navigation (should persist forward/backward)

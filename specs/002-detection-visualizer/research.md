@@ -45,7 +45,7 @@
 - Event-driven architecture: Overkill for GUI application with direct service calls
 
 **Implementation Notes**:
-- Import services: `from src.services.car_detector import CarDetector`
+- Import services: `from src.services.vehicle_detector import VehicleDetector`
 - Import models: `from src.models.detection_result import DetectionResult, TrackedCar`
 - Services can be instantiated in the GUI application and called from GUI thread or worker thread
 - For async processing, use QThread to run detection in background
@@ -94,7 +94,7 @@
 - JSON file contains: video_path, config_path, speed_measurements
 - Auto-load video and config from JSON paths on file open
 - Extract speed_measurements (track_id, left_crossing_frame, right_crossing_frame) from JSON
-- Run live detection on current frame when user navigates (using Feature 001's CarDetector)
+- Run live detection on current frame when user navigates (using Feature 001's VehicleDetector)
 - Maintain tracking state across navigation (forward/backward) using Feature 001's CarTracker
 - Highlight known cars from JSON (by track_id) alongside live detection results
 - Visually distinguish between expected results (from JSON) and live detection results

@@ -41,17 +41,17 @@ class DebugImageGenerator:
         Returns:
             Formatted criteria text string
         """
-        car_rightmost_x = detection.bounding_box.x2
+        vehicle_rightmost_x = detection.bounding_box.x2
         
         if event.coordinate_type == "left":
             criteria_text = (
                 f"Frame: {event.frame_number} | Track ID: {event.track_id}\n"
-                f"Bounding box X: {car_rightmost_x} - Left line coord: {self.left_coordinate}"
+                f"Bounding box X: {vehicle_rightmost_x} - Left line coord: {self.left_coordinate}"
             )
         else:  # right
             criteria_text = (
                 f"Frame: {event.frame_number} | Track ID: {event.track_id}\n"
-                f"Bounding box X: {car_rightmost_x} - Right line coord: {self.right_coordinate}"
+                f"Bounding box X: {vehicle_rightmost_x} - Right line coord: {self.right_coordinate}"
             )
         
         return criteria_text

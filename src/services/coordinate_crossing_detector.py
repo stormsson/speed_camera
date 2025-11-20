@@ -56,7 +56,7 @@ class CoordinateCrossingDetector:
         # Get the most recent detection
         latest_detection = tracked_car.detections[-1]
         # Use rightmost edge of bounding box (x2) for crossing detection
-        car_rightmost_x = latest_detection.bounding_box.x2
+        vehicle_rightmost_x = latest_detection.bounding_box.x2
 
         # Get previous frame's rightmost x for transition detection
         previous_rightmost_x = None
@@ -70,14 +70,14 @@ class CoordinateCrossingDetector:
             # Crossing occurs on transition: previous x2 < coordinate AND current x2 >= coordinate
             if previous_rightmost_x is not None:
                 # Transition-based detection: check if crossing occurred
-                if previous_rightmost_x < self.left_coordinate and car_rightmost_x >= self.left_coordinate:
+                if previous_rightmost_x < self.left_coordinate and vehicle_rightmost_x >= self.left_coordinate:
                     tracked_car.left_crossing_frame = frame_number
                     event = CoordinateCrossingEvent(
                         track_id=tracked_car.track_id,
                         frame_number=frame_number,
                         coordinate_type="left",
                         coordinate_value=self.left_coordinate,
-                        car_rightmost_x=car_rightmost_x,  # Store rightmost x for logging
+                        vehicle_rightmost_x=vehicle_rightmost_x,  # Store rightmost x for logging
                         confidence=latest_detection.confidence
                     )
                     events.append(event)
@@ -89,7 +89,7 @@ class CoordinateCrossingDetector:
                             "track_id": tracked_car.track_id,
                             "coordinate_type": "left",
                             "coordinate_value": self.left_coordinate,
-                            "car_rightmost_x": car_rightmost_x,
+                            "vehicle_rightmost_x": vehicle_rightmost_x,
                             "previous_rightmost_x": previous_rightmost_x,
                             "confidence": latest_detection.confidence,
                             "event_type": "left_crossing",
@@ -127,22 +127,22 @@ class CoordinateCrossingDetector:
                             "frame_number": frame_number,
                             "track_id": tracked_car.track_id,
                             "previous_rightmost_x": previous_rightmost_x,
-                            "current_rightmost_x": car_rightmost_x,
+                            "current_rightmost_x": vehicle_rightmost_x,
                             "left_coordinate": self.left_coordinate,
-                            "transition_condition": f"{previous_rightmost_x} < {self.left_coordinate} and {car_rightmost_x} >= {self.left_coordinate}"
+                            "transition_condition": f"{previous_rightmost_x} < {self.left_coordinate} and {vehicle_rightmost_x} >= {self.left_coordinate}"
                         }
                     )
             else:
                 # Edge case: first detection, no previous frame to compare
                 # If car already past coordinate on first detection, we can't detect transition
                 # This is acceptable - car appeared after the line
-                if car_rightmost_x >= self.left_coordinate:
+                if vehicle_rightmost_x >= self.left_coordinate:
                     logger.debug(
                         "Car first detected past left coordinate - no transition to detect",
                         extra={
                             "frame_number": frame_number,
                             "track_id": tracked_car.track_id,
-                            "car_rightmost_x": car_rightmost_x,
+                            "vehicle_rightmost_x": vehicle_rightmost_x,
                             "left_coordinate": self.left_coordinate
                         }
                     )
@@ -153,14 +153,14 @@ class CoordinateCrossingDetector:
             # Crossing occurs on transition: previous x2 < coordinate AND current x2 >= coordinate
             if previous_rightmost_x is not None:
                 # Transition-based detection: check if crossing occurred
-                if previous_rightmost_x < self.right_coordinate and car_rightmost_x >= self.right_coordinate:
+                if previous_rightmost_x < self.right_coordinate and vehicle_rightmost_x >= self.right_coordinate:
                     tracked_car.right_crossing_frame = frame_number
                     event = CoordinateCrossingEvent(
                         track_id=tracked_car.track_id,
                         frame_number=frame_number,
                         coordinate_type="right",
                         coordinate_value=self.right_coordinate,
-                        car_rightmost_x=car_rightmost_x,  # Store rightmost x for logging
+                        vehicle_rightmost_x=vehicle_rightmost_x,  # Store rightmost x for logging
                         confidence=latest_detection.confidence
                     )
                     events.append(event)
@@ -172,7 +172,7 @@ class CoordinateCrossingDetector:
                             "track_id": tracked_car.track_id,
                             "coordinate_type": "right",
                             "coordinate_value": self.right_coordinate,
-                            "car_rightmost_x": car_rightmost_x,
+                            "vehicle_rightmost_x": vehicle_rightmost_x,
                             "previous_rightmost_x": previous_rightmost_x,
                             "confidence": latest_detection.confidence,
                             "event_type": "right_crossing",
@@ -210,21 +210,21 @@ class CoordinateCrossingDetector:
                             "frame_number": frame_number,
                             "track_id": tracked_car.track_id,
                             "previous_rightmost_x": previous_rightmost_x,
-                            "current_rightmost_x": car_rightmost_x,
+                            "current_rightmost_x": vehicle_rightmost_x,
                             "right_coordinate": self.right_coordinate,
-                            "transition_condition": f"{previous_rightmost_x} < {self.right_coordinate} and {car_rightmost_x} >= {self.right_coordinate}"
+                            "transition_condition": f"{previous_rightmost_x} < {self.right_coordinate} and {vehicle_rightmost_x} >= {self.right_coordinate}"
                         }
                     )
             else:
                 # Edge case: first detection after left crossing, no previous frame to compare
                 # If car already past coordinate on first detection, we can't detect transition
-                if car_rightmost_x >= self.right_coordinate:
+                if vehicle_rightmost_x >= self.right_coordinate:
                     logger.debug(
                         "Car first detected past right coordinate - no transition to detect",
                         extra={
                             "frame_number": frame_number,
                             "track_id": tracked_car.track_id,
-                            "car_rightmost_x": car_rightmost_x,
+                            "vehicle_rightmost_x": vehicle_rightmost_x,
                             "right_coordinate": self.right_coordinate
                         }
                     )

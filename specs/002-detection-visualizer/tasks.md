@@ -77,7 +77,7 @@ Final Phase: Polish
 
 - [X] T007 [P] Create JSON loader controller in src/gui/controllers/json_loader.py to parse Feature 001 JSON result files and extract video_path, config_path, speed_measurements
 - [X] T008 [P] Create video controller in src/gui/controllers/video_controller.py to handle video loading, frame extraction, and metadata management using Feature 001's VideoProcessor
-- [X] T009 [P] Create detection controller in src/gui/controllers/detection_controller.py to coordinate Feature 001's services (CarDetector, CarTracker, CoordinateCrossingDetector) for live detection
+- [X] T009 [P] Create detection controller in src/gui/controllers/detection_controller.py to coordinate Feature 001's services (VehicleDetector, CarTracker, CoordinateCrossingDetector) for live detection
 - [X] T010 Create GUI state models in src/gui/models.py for VideoDisplayState, CoordinateOverlayState, DetectionVisualizationState, FrameNavigationState per data-model.md
 
 ## Phase 3: User Story 1 - Visualize Video Frames with Coordinate Overlays (P1) [MVP]
@@ -133,8 +133,8 @@ Final Phase: Polish
 ### User Story 3 Tasks
 
 - [X] T031 [US3] Create detection overlay widget in src/gui/widgets/detection_overlay.py to render bounding boxes, tracking IDs, confidence scores, and crossing event markers using QPainter
-- [X] T032 [US3] Integrate detection controller in main window: instantiate CarDetector, CarTracker, CoordinateCrossingDetector from Feature 001 services, maintain tracking state across frame navigation
-- [X] T033 [US3] Implement live detection on frame navigation: call CarDetector.detect() on current frame when user navigates, update DetectionVisualizationState with DetectionResult objects
+- [X] T032 [US3] Integrate detection controller in main window: instantiate VehicleDetector, CarTracker, CoordinateCrossingDetector from Feature 001 services, maintain tracking state across frame navigation
+- [X] T033 [US3] Implement live detection on frame navigation: call VehicleDetector.detect() on current frame when user navigates, update DetectionVisualizationState with DetectionResult objects
 - [X] T034 [US3] Implement tracking state maintenance in detection controller: call CarTracker.update() with current frame detections, maintain TrackedCar dictionary across forward/backward navigation, preserve track IDs
 - [X] T035 [US3] Implement live crossing detection in detection controller: call CoordinateCrossingDetector.detect_crossings() on current frame with tracked cars, update DetectionVisualizationState with CoordinateCrossingEvent objects
 - [X] T036 [US3] Load JSON speed_measurements in JSON loader: extract speed_measurements array from JSON, parse SpeedMeasurement objects with track_id, left_crossing_frame, right_crossing_frame, store in DetectionVisualizationState
@@ -160,9 +160,9 @@ Final Phase: Polish
 
 - [X] T046 [US4] Create debug panel widget in src/gui/widgets/debug_panel.py as QWidget or QDockWidget subclass to display detailed detection analysis information per frame
 - [X] T047 [US4] Implement debug information state model in src/gui/models.py: add DebugInformationState class with attributes for current_frame_number, detection_results, tracked_cars_analysis, coordinate_crossing_analysis, configuration_values, json_expected_results per data-model.md
-- [X] T048 [US4] Implement crossing analysis computation in debug panel widget: compute car_rightmost_x from BoundingBox.x2, compare with coordinate_value from Configuration, determine condition_met (car_rightmost_x >= coordinate_value), generate crossing_state explanation based on TrackedCar crossing frame state
-- [X] T049 [US4] Implement per-car analysis formatting in debug panel widget: create _format_car_analysis() method to format YOLO detection results (bounding box coordinates, confidence, class_name), tracked car information (track_id, left_crossing_frame, right_crossing_frame), and car_rightmost_x value per FR-021
-- [X] T050 [US4] Implement crossing explanation formatting in debug panel widget: create _format_crossing_explanation() method to format crossing detection explanation when detected (car_rightmost_x, coordinate_value, comparison logic, condition_met) and when not detected (car_rightmost_x, coordinate_value, comparison result, crossing_state) per FR-022 and FR-023
+- [X] T048 [US4] Implement crossing analysis computation in debug panel widget: compute vehicle_rightmost_x from BoundingBox.x2, compare with coordinate_value from Configuration, determine condition_met (vehicle_rightmost_x >= coordinate_value), generate crossing_state explanation based on TrackedCar crossing frame state
+- [X] T049 [US4] Implement per-car analysis formatting in debug panel widget: create _format_car_analysis() method to format YOLO detection results (bounding box coordinates, confidence, class_name), tracked car information (track_id, left_crossing_frame, right_crossing_frame), and vehicle_rightmost_x value per FR-021
+- [X] T050 [US4] Implement crossing explanation formatting in debug panel widget: create _format_crossing_explanation() method to format crossing detection explanation when detected (vehicle_rightmost_x, coordinate_value, comparison logic, condition_met) and when not detected (vehicle_rightmost_x, coordinate_value, comparison result, crossing_state) per FR-022 and FR-023
 - [X] T051 [US4] Implement live vs JSON comparison formatting in debug panel widget: create _format_comparison() method to display both live detection results and expected results from JSON speed_measurements, allowing users to compare and identify discrepancies per FR-026
 - [X] T052 [US4] Implement debug panel update method in debug panel widget: create update_debug_info() method that accepts frame_number, detections, tracked_cars, crossing_events, config, json_measurements and updates panel display with formatted analysis per FR-020
 - [X] T053 [US4] Integrate debug panel in main window: add DebugPanelWidget to main window layout (dockable or fixed panel), connect frame navigation signals to debug panel update, pass detection results from DetectionController, configuration, and JSON measurements to debug panel per FR-024

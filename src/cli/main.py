@@ -12,7 +12,7 @@ import click
 
 from src.models import Configuration, ProcessingResult, VideoMetadata, TrackedCar
 from src.services.video_processor import VideoProcessor
-from src.services.car_detector import CarDetector
+from src.services.vehicle_detector import VehicleDetector
 from src.services.car_tracker import CarTracker
 from src.services.coordinate_crossing_detector import CoordinateCrossingDetector
 from src.services.speed_calculator import SpeedCalculator
@@ -84,7 +84,7 @@ def process_video(
         else:
             crossing_detector = CoordinateCrossingDetector(config)
         
-        car_detector = CarDetector(confidence_threshold=confidence_threshold)
+        vehicle_detector = VehicleDetector(confidence_threshold=confidence_threshold)
         car_tracker = CarTracker()
         speed_calculator = SpeedCalculator(config)
         
@@ -104,7 +104,7 @@ def process_video(
             frame_one_based = frame_number + 1
 
             # Detect cars
-            detections = car_detector.detect(frame, frame_one_based)
+            detections = vehicle_detector.detect(frame, frame_one_based)
             detections_count += len(detections)
 
             # Update tracking

@@ -46,7 +46,7 @@ Represents the state of coordinate overlay rendering.
 Represents the state of detection visualization on the current frame.
 
 **Attributes**:
-- `detections` (List[DetectionResult]): List of live detections for current frame (from Feature 001's CarDetector)
+- `detections` (List[DetectionResult]): List of live detections for current frame (from Feature 001's VehicleDetector)
 - `tracked_cars` (Dict[int, TrackedCar]): Dictionary mapping track_id to TrackedCar, maintained across navigation (from Feature 001's CarTracker)
 - `crossing_events` (List[CoordinateCrossingEvent]): List of live crossing events for current frame (from Feature 001's CoordinateCrossingDetector)
 - `json_speed_measurements` (List[SpeedMeasurement]): List of speed measurements from JSON input file (expected results)
@@ -93,7 +93,7 @@ The visualizer uses the following data models from Feature 001. See `/specs/001-
 4. **JSON Speed Measurements Loading**: speed_measurements from JSON → DetectionVisualizationState.json_speed_measurements
 5. **Frame Navigation**: User input → FrameNavigationState → Video frame extraction → VideoDisplayState update
 6. **Live Detection Processing** (On-demand per frame):
-   - Current frame → Feature 001's CarDetector → DetectionResult
+   - Current frame → Feature 001's VehicleDetector → DetectionResult
    - DetectionResult → Feature 001's CarTracker (maintains state) → TrackedCar
    - TrackedCar → Feature 001's CoordinateCrossingDetector → CoordinateCrossingEvent
    - All live results → DetectionVisualizationState
@@ -187,7 +187,7 @@ Represents detailed detection analysis data displayed in the debug panel.
 
 **Attributes**:
 - `current_frame_number` (int): Frame number being analyzed
-- `detection_results` (List[DetectionResult]): Live YOLO detection results for current frame (from Feature 001's CarDetector)
+- `detection_results` (List[DetectionResult]): Live YOLO detection results for current frame (from Feature 001's VehicleDetector)
 - `tracked_cars_analysis` (Dict[int, TrackedCarAnalysis]): Dictionary mapping track_id to per-car analysis
 - `coordinate_crossing_analysis` (Dict[int, CrossingAnalysis]): Dictionary mapping track_id to crossing detection analysis
 - `configuration_values` (Configuration): Current configuration (left_coordinate, right_coordinate) from Feature 001
@@ -204,15 +204,15 @@ Represents detailed detection analysis data displayed in the debug panel.
 - `class_name` (str): Detected class name from Feature 001's DetectionResult
 - `left_crossing_frame` (Optional[int]): Frame when left was crossed (from Feature 001's TrackedCar)
 - `right_crossing_frame` (Optional[int]): Frame when right was crossed (from Feature 001's TrackedCar)
-- `car_rightmost_x` (int): Computed rightmost X coordinate (BoundingBox.x2 from Feature 001)
+- `vehicle_rightmost_x` (int): Computed rightmost X coordinate (BoundingBox.x2 from Feature 001)
 
 **CrossingAnalysis** (nested data structure):
 - `track_id` (int): Track ID of car being analyzed
 - `coordinate_type` (str): "left" or "right" coordinate being checked
 - `coordinate_value` (int): Coordinate value from Feature 001's Configuration
-- `car_rightmost_x` (int): Car's rightmost X position (BoundingBox.x2)
-- `comparison_result` (str): Formatted comparison string (e.g., "car_rightmost_x >= coordinate_value" or "car_rightmost_x < coordinate_value")
-- `condition_met` (bool): Whether crossing condition was met (car_rightmost_x >= coordinate_value)
+- `vehicle_rightmost_x` (int): Car's rightmost X position (BoundingBox.x2)
+- `comparison_result` (str): Formatted comparison string (e.g., "vehicle_rightmost_x >= coordinate_value" or "vehicle_rightmost_x < coordinate_value")
+- `condition_met` (bool): Whether crossing condition was met (vehicle_rightmost_x >= coordinate_value)
 - `crossing_state` (str): Explanation of current crossing state (e.g., "left_crossing_frame is None", "left already crossed, waiting for right")
 - `crossing_detected` (bool): Whether crossing event was detected this frame (from Feature 001's CoordinateCrossingDetector)
 
